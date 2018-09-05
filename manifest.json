@@ -9,5 +9,6 @@
    "default_popup": "popup.html"
  },
 
- "permissions": ["activeTab"]
+ "permissions": ["activeTab"],
+ "content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }
