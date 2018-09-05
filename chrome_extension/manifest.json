@@ -1,0 +1,13 @@
+{
+ "manifest_version": 2,
+ "name": "ROPE",
+ "description": "Add collaboration features to Twine.",
+ "version": "1",
+ "author": "Team 7330",
+"browser_action": {
+   "default_icon": "tab-icon.png",
+   "default_popup": "popup.html"
+ },
+
+ "permissions": ["activeTab"]
+}
