@@ -25,13 +25,17 @@ firebase.auth().onAuthStateChanged(function(user) {
 loginButton.addEventListener('click', function() {
 	document.getElementById("login-button").disabled = true;
 	document.getElementById("login-done").style.display = "block";
-	var email = document.getElementById('email').value;
-	var password = document.getElementById('password').value;
-	firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-		var errorCode = error.code;
-		var errorMessage = error.message;
-		console.log(errorCode, errorMessage);
-	});
+  var email = document.getElementById('email').value;
+  var password = document.getElementById('password').value;
+
+  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+
+      alert(errorMessage);
+  });
+  alert("login successful")
 
 }, false);
 
@@ -39,6 +43,34 @@ registerButton.addEventListener('click', function() {
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
 
+
+    firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
+    .then(function() {
+        // The link was successfully sent. Inform the user.
+        alert("A link was sent to your email for verification.")
+        // Save the email locally so you don't need to ask the user for it again
+        // if they open the link on the same device.
+        window.localStorage.setItem('emailForSignIn', email);
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+
+            alert(errorMessage);
+        });
+    })
+    .catch(function(error) {
+        // Some error occurred, you can inspect the code: error.code
+        alert(error.message)
+    });
+  document.getElementById("login-button").disabled = true;
+  document.getElementById("login-done").style.display = "block";
+    
+}, false);
+
+registerButton.addEventListener('click', function() {
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
 
     firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
     .then(function() {
