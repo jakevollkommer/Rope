@@ -14,6 +14,7 @@ var loginButton = document.getElementById('login-button');
 var registerButton = document.getElementById('register-button');
 
 loginButton.addEventListener('click', function() {
+<<<<<<< HEAD
   var email = document.getElementById('email').value;
   var password = document.getElementById('password').value;
 
@@ -52,6 +53,29 @@ registerButton.addEventListener('click', function() {
         // Some error occurred, you can inspect the code: error.code
         alert(error.message)
     });
+=======
+  document.getElementById("login-button").disabled = true;
+  document.getElementById("login-done").style.display = "block";
+    
+}, false);
+
+registerButton.addEventListener('click', function() {
+	var email = document.getElementById('email').value;
+	var password = document.getElementById('password').value;
+  
+  document.getElementById("register-button").disabled = true;
+  document.getElementById("register-done").style.display = "block";
+  
+  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+	  // Handle Errors here.
+	  var errorCode = error.code;
+	  var errorMessage = error.message;
+
+	  console.log(errorCode);
+	  console.log(errorMessage);
+	  // ...
+	});
+>>>>>>> 65725a56c1f092528eba24fd0e2f5676d044be77
 }, false);
 
 var actionCodeSettings = {
