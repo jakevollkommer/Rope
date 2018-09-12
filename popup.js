@@ -9,7 +9,6 @@ var config = {
 };
 firebase.initializeApp(config);
 
-
 var loginButton = document.getElementById('login-button');
 var registerButton = document.getElementById('register-button');
 firebase.auth().onAuthStateChanged(function(user) {
