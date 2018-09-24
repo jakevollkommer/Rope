@@ -69,3 +69,10 @@ registerButton.addEventListener('click', function() {
     document.getElementById("login-done").style.display = "block";
 
 }, false);
+var actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be whitelisted in the Firebase Console.
+    url: 'https://www.twinery.org/2/#!/stories',
+    // This must be true.
+    handleCodeInApp: true,
+};
