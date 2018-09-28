@@ -1,14 +1,24 @@
 {
- "manifest_version": 2,
- "name": "ROPE",
- "description": "Add collaboration features to Twine.",
- "version": "1",
- "author": "Team 7330",
-"browser_action": {
-   "default_icon": "logo.png",
-   "default_popup": "popup.html"
- },
-
- "permissions": ["activeTab"],
- "content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
+	"manifest_version": 2,
+		"name": "ROPE",
+		"description": "Add collaboration features to Twine.",
+		"version": "1",
+		"author": "Team 7330",
+		"browser_action": {
+			"default_icon": "logo.png",
+			"default_popup": "popup.html"
+		},
+		"content_scripts": [
+		{
+			"matches": ["http://*/*"],
+			"js": ["src/contentScript.js"],
+			"permissions": [
+				"tabs",
+				"http://*/*",
+				"https://*/*"
+			]
+		}
+	],
+		"permissions": ["activeTab", "storage"],
+		"content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }
