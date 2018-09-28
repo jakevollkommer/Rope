@@ -20,6 +20,19 @@ firebase.auth().onAuthStateChanged(function(user) {
 		document.getElementById("HomePage").style.display='block';
 		var userId = 'CGaO1Ae8V8hLA13qPSlKKAJbgsS2';
 		database.ref('userStories/' + userId).once('value').then(function(snapshot) {
+			const storiesToFetch = snapshot.val();
+			// Map the Firebase promises into an array
+			const storyPromises = storiesToFetch.map(id => {
+				return database.ref('stories').child(id).once('value').then(s => s.val())
+			})
+			// Wait for all the async requests mapped into 
+			// the array to complete
+			var storyDataList = {};
+			Promise.all(storyPromises)
+				.then(story => {
+				  storyDataList[story[0]['id']] = story[0];
+				})
+				.catch(err => console.log(error))
 			var storyList = snapshot.val();
 			var promises = [];
 			for (var i = 0; i < storyList.length; i++) {
@@ -32,14 +45,19 @@ firebase.auth().onAuthStateChanged(function(user) {
 				promises.push(p);
 			}
 			Promise.all(promises).then(function(objects) {
-				var jsonObj = {};
+				var jsonObj = {
+					allPassages: {},
+					allStories: {}
+				};
+				jsonObj['allStories'] = storyDataList;
+				console.log(storyDataList);
 				for (var object of objects) {
-					jsonObj[object.storyName] = object.passages;
+					jsonObj['allPassages'][object.storyName] = object.passages;
 				}
+				console.log(jsonObj);
 
 				// Send list of user stories to user
 				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-						console.log('hello');
 					chrome.tabs.sendMessage(tabs[0].id, jsonObj, function(response) {
 						console.log(response.farewell);
 					});
