@@ -14,58 +14,60 @@ var registerButton = document.getElementById('register-button');
 var logoutButton = document.getElementById('logout-button');
 
 var database = firebase.database();
+
+/*
+ * Get a signed-in user's stories from Firebase and sync them to browser storage.
+ * @param userId the signed-in user's uid
+ */
+function syncStoriesToLocalStorage(userId) {
+	return new Promise(function(resolve, reject) {
+		// 1. Get ids of user's stories
+		database.ref('userStories/' + userId).once('value').then(function(snapshot) {
+			const userStoriesIds = snapshot.val();
+
+			let stories = [];
+			let passages = [];
+			const storiesQuery = userStoriesIds.map(id => {
+				return database.ref('stories/' + id).once('value')
+					.then(s => stories.push(s.val()));
+			})
+			const passagesQuery = userStoriesIds.map(id => {
+					return database.ref('passages').orderByChild('story')
+						.equalTo(id).once('value').then(s => {
+							let somePassages = s.val();
+							Object.keys(somePassages).map(key => {
+								passages.push(somePassages[key]);
+							});
+						});
+			});
+			// 2. Get this user's stories 
+			Promise.all(storiesQuery)
+				.then(storiesInDB => {
+					// 3. Get the passages of those stories
+					return Promise.all(passagesQuery);
+				})
+				.then(passagesInDB =>{
+					// 4. Send data to content script to store locally
+					const data = {
+						stories: stories,
+						passages: passages
+					}
+					chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+						chrome.tabs.sendMessage(tabs[0].id, data, response => console.log(response.farewell));
+					});
+				})
+				.catch(err => console.log(err))
+		});
+	});
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
 		document.getElementById("LoginPage").style.display='none';
 		document.getElementById("HomePage").style.display='block';
-		var userId = 'CGaO1Ae8V8hLA13qPSlKKAJbgsS2';
-		database.ref('userStories/' + userId).once('value').then(function(snapshot) {
-			const storiesToFetch = snapshot.val();
-			// Map the Firebase promises into an array
-			const storyPromises = storiesToFetch.map(id => {
-				return database.ref('stories').child(id).once('value').then(s => s.val())
-			})
-			// Wait for all the async requests mapped into 
-			// the array to complete
-			var storyDataList = {};
-			Promise.all(storyPromises)
-				.then(story => {
-				  storyDataList[story[0]['id']] = story[0];
-				})
-				.catch(err => console.log(error))
-			var storyList = snapshot.val();
-			var promises = [];
-			for (var i = 0; i < storyList.length; i++) {
-				var p = new Promise(function(resolve, reject) {
-					var storyName = storyList[i];
-					database.ref('passages').orderByChild('story').equalTo(storyName).on('value', function(snapshot) {
-						resolve({storyName: storyName, passages: snapshot.val()});
-					})
-				});
-				promises.push(p);
-			}
-			Promise.all(promises).then(function(objects) {
-				var jsonObj = {
-					allPassages: {},
-					allStories: {}
-				};
-				jsonObj['allStories'] = storyDataList;
-				console.log(storyDataList);
-				for (var object of objects) {
-					jsonObj['allPassages'][object.storyName] = object.passages;
-				}
-				console.log(jsonObj);
-
-				// Send list of user stories to user
-				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-					chrome.tabs.sendMessage(tabs[0].id, jsonObj, function(response) {
-						console.log(response.farewell);
-					});
-				});
-
-			});
-			
-
+		var userId = firebase.auth().currentUser.uid;
+		syncStoriesToLocalStorage(userId).then(function() {
+			console.log('ok !');
 		});
 	} else {
 		// User is signed out.

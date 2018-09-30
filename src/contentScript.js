@@ -6,29 +6,46 @@
 console.log('content script loaded');
 chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
-			var allPassages = request.allPassages;
-			var allStories = request.allStories;
 			console.log(request);
-			// Iterate over keys, see what stories are here locally
-			// For the stories that are not here, add them, and add the passages
-			var storyNames = Object.keys(allStories);
-			var localStoryNames = window.localStorage['twine-stories'].split(',');
-			for (var storyName of storyNames) {
-				if (!localStoryNames.includes(storyName)) {
-				  window.localStorage['twine-stories-' + storyName] = JSON.stringify(allStories[storyName]);
-					localStoryNames.push(storyName);
-					var passages = allPassages[storyName];
-					window.localStorage['twine-passages'] += ',' + Object.keys(passages).join(',');
-					for (var passageId of Object.keys(passages)) {
-						if (passages.hasOwnProperty(passageId)) {
-							var passage = passages[passageId];
-							console.log(passage);
-							window.localStorage['twine-passages-' + passageId] = JSON.stringify(passage);
-						}
+			// Set twine-stories, twine-passages, twine-story-*, and twine-passage-*
+			const stories = request.stories;
+			const storyIds = stories.map(story => story.id);
+			const passages = request.passages;
+			const passageIds  = passages.map(passage => passage.id);
+			// Filter stories that are already stored locally.
+			if (!window.localStorage['twine-stories']) {
+				window.localStorage['twine-stories'] = '';
+			}
+			if (!window.localStorage['twine-passages']) {
+				window.localStorage['twine-passages'] = '';
+			}
+			const localStoryIds = window.localStorage['twine-stories'].split(',');
+			const localPassageIds = window.localStorage['twine-passages'].split(',');
+			storyIds.map(id => {
+				if (!localStoryIds.includes(id)) {
+					if (window.localStorage['twine-stories'].length == 0) {
+						window.localStorage['twine-stories'] += id;
+					} else {
+						window.localStorage['twine-stories'] += ',' + id;
 					}
 				}
-			}
-		  window.localStorage['twine-stories'] = localStoryNames.join(',');
+			});
+			passageIds.map(id => {
+				if (!localPassageIds.includes(id)) {
+					if (window.localStorage['twine-passages'].length == 0) {
+						window.localStorage['twine-passages'] += id;
+					} else {
+						window.localStorage['twine-passages'] += ',' + id;
+					}
+				}
+			});
+
+			stories.map(story => {
+				window.localStorage['twine-stories-' + story.id] = JSON.stringify(story);
+			});
+			passages.map(passage => {
+				window.localStorage['twine-passages-' + passage.id] = JSON.stringify(passage);
+			});
 			sendResponse();
 		});
 
