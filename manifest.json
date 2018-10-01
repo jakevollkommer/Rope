@@ -6,19 +6,23 @@
 		"author": "Team 7330",
 		"browser_action": {
 			"default_icon": "logo.png",
-			"default_popup": "popup.html"
+			"default_popup": "html/popup.html"
+		},
+		"background": {
+			"page": "html/background.html",
+			"permissions": [
+				"tabs"
+			]
 		},
 		"content_scripts": [
 		{
-			"matches": ["http://*/*"],
-			"js": ["src/contentScript.js"],
+			"matches": ["http://twinery.org/*"],
+			"js": ["js/contentScript.js"],
 			"permissions": [
-				"tabs",
-				"http://*/*",
-				"https://*/*"
+				"tabs"
 			]
 		}
 	],
-		"permissions": ["activeTab", "storage"],
+		"permissions": ["activeTab", "storage", "tabs"],
 		"content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../styles/styles.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Rope</title>
+  </head>
+  <body>
+      <h1>Rope</h1>
+			<p class="description"><i>Collaborate on Twine stories in real time</i></p>
+			<a href="http://twinery.org/2/#!/stories" id="twine-link" target="_blank">Go to Twine <i class="fa fa-external-link"></i></a>
+			<hr>
+			<div id = "LoginPage">
+				<input id="email" type="text" placeholder="Email" name="Email" required>
+				<input id="password" type="password" placeholder="Password" name="psw" required>
+				<div id="buttons-container">
+					<button id="login-button">Login</button>
+					<button id="register-button">Register</button>
+				</div>
+				<div id="login-done", style="display:none">Login successful!</div>
+				<div id="register-done", style="display:none">Registration successful!</div>
+			</div>
+			<div id = "HomePage" style ="display:none">
+				<p id="current-user-display"></p>
+				<button id="logout-button">Logout</button>
+			</div>
+    <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
+    <script src="../js/popup.js"></script>
+  </body>
+</html>

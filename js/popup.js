@@ -13,62 +13,12 @@ var loginButton = document.getElementById('login-button');
 var registerButton = document.getElementById('register-button');
 var logoutButton = document.getElementById('logout-button');
 
-var database = firebase.database();
-
-/*
- * Get a signed-in user's stories from Firebase and sync them to browser storage.
- * @param userId the signed-in user's uid
- */
-function syncStoriesToLocalStorage(userId) {
-	return new Promise(function(resolve, reject) {
-		// 1. Get ids of user's stories
-		database.ref('userStories/' + userId).once('value').then(function(snapshot) {
-			const userStoriesIds = snapshot.val();
-
-			let stories = [];
-			let passages = [];
-			const storiesQuery = userStoriesIds.map(id => {
-				return database.ref('stories/' + id).once('value')
-					.then(s => stories.push(s.val()));
-			})
-			const passagesQuery = userStoriesIds.map(id => {
-					return database.ref('passages').orderByChild('story')
-						.equalTo(id).once('value').then(s => {
-							let somePassages = s.val();
-							Object.keys(somePassages).map(key => {
-								passages.push(somePassages[key]);
-							});
-						});
-			});
-			// 2. Get this user's stories 
-			Promise.all(storiesQuery)
-				.then(storiesInDB => {
-					// 3. Get the passages of those stories
-					return Promise.all(passagesQuery);
-				})
-				.then(passagesInDB =>{
-					// 4. Send data to content script to store locally
-					const data = {
-						stories: stories,
-						passages: passages
-					}
-					chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-						chrome.tabs.sendMessage(tabs[0].id, data, response => console.log(response.farewell));
-					});
-				})
-				.catch(err => console.log(err))
-		});
-	});
-}
-
 firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
+		console.log(document.getElementById('current-user-display'))
+		document.getElementById('current-user-display').innerHTML = 'Logged in as <b>' + user.email + '</b>';
 		document.getElementById("LoginPage").style.display='none';
 		document.getElementById("HomePage").style.display='block';
-		var userId = firebase.auth().currentUser.uid;
-		syncStoriesToLocalStorage(userId).then(function() {
-			console.log('ok !');
-		});
 	} else {
 		// User is signed out.
 		// ...
@@ -87,9 +37,6 @@ loginButton.addEventListener('click', function() {
 	var password = document.getElementById('password').value;
 
 	firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
-		chrome.tabs.update({
-			url: "http://twinery.org/2/#!/stories"
-		});
 	}).catch(function(error) {
 		// Handle Errors here.
 		var errorCode = error.code;
@@ -105,9 +52,6 @@ logoutButton.addEventListener('click', function() {
 	firebase.auth().signOut().then(function(user) {
 		console.log("logged out");
 
-		chrome.tabs.update({
-			url: "http://google.com"
-		});
 
 	}).catch(function(error) {
 		// Handle Errors here.

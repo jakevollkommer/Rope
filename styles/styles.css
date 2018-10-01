@@ -1,46 +1,68 @@
-h1 {
-	color: mediumseagreen;
-    /*background-color: lightblue;*/
-    text-align: center;
-    font-size: 14px;
-    height: 150px;
-    width: 300px;
-    /*background-image: url("logo.png");*/
-
-
+body {
+	font-family
 }
-body{
-    background-image: url("logo.png");
+h1,p { color: #535353; }
+h1 { font-size: 22px; }
+p { font-size: 14px; }
 
+.buttons-container {
+	display: block;
+	margin: 0 auto;
 }
+
+.description {
+	padding-right: 10px;
+}
+
 button {
-   height: 30px;
-   width: 70px;
-   background: none;
-   color: #313131;
-   border: 1px solid #313131;
-   border-radius: 50px;
-   font-size: 12px;
-   cursor: pointer;
-   /*padding-right: 20px;*/
-   /*transform: translateX(-100%);*/
-    /*transition: transform 1s;*/
+	font-size: 14px;
+	height: 30px;
+	width: 70px;
+	background: #0bda50;
+	color: white;
+	border-radius: 5px;
+	margin-top: 10px;
+	margin-right: 5px;
+	border-width: 0;
+	cursor: pointer;
 }
 form {
-    padding-top: 20px;
+	padding-top: 20px;
 }
 input {
-    height: 30px;
-    width: 300px;
-    border-radius: 60px;
-    padding-bottom: 10px;
-    -webkit-appearance: textfield;
-    box-sizing: border-box;
+	font-size: 14px;
+	width: 200px;
+	border-width: 1px;
+	margin-top: 10px;
+	margin-right: 5px;
+	border: none;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 5px;
+	-webkit-appearance: textfield;
+	box-sizing: border-box;
 
 }
 span + span {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 .register-button {
-    color: red;
+	color: red;
+}
+a#twine-link {
+	font-size: 14px;
+	color: #107bf2;
+	padding-bottom: 30px;
+}
+
+a#twine-link:hover {
+	color: #20f368;
+}
+
+hr {
+	margin-top: 15px;
+	margin-bottom: 10px;
+	border: none;
+	height: 1px;
+	color: #ccc ; /* old IE */
+	background-color: #ccc; /* Modern Browsers */
 }
