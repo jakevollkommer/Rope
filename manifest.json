@@ -17,7 +17,7 @@
 		"content_scripts": [
 		{
 			"matches": ["http://twinery.org/*"],
-			"js": ["js/contentScript.js"],
+			"js": ["build/inject.js"],
 			"permissions": [
 				"tabs"
 			]
