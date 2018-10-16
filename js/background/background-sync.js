@@ -1,5 +1,9 @@
 /*
- * Get a signed-in user's stories from Firebase and sync them to browser storage.
+ * Firebase Syncing Module
+ */
+
+/*
+ * Get a user's stories from Firebase.
  * @param userId the signed-in user's uid
  */
 Background.prototype.getUserStoriesFromFirebase = function(userId) {
@@ -30,7 +34,7 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 						return Promise.all(passagesQuery);
 					})
 					.then(passagesInDB =>{
-						// 4. Return from database
+						// 4. Return to database
 						resolve({
 							stories: stories,
 							passages: passages

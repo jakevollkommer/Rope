@@ -1,3 +1,6 @@
+/*
+ * Local Storage module
+ */
 ContentScript.prototype.saveFirebaseDataLocally = function(request) {
 	console.log(request);
 	this.saveStoriesLocally(request.stories);

@@ -1,4 +1,8 @@
 /*
+ * Chrome Messaging Module
+ */
+
+/*
  * Listener for messages from the content script
  */
 Background.prototype.initMessageListener = function() {

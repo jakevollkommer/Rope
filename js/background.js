@@ -1,3 +1,7 @@
+/*
+ * The background script is the extension's event handler; 
+ * it contains listeners for browser events that are important to the extension.
+ */
 var Background = function() {
 	this.userStories = {};
 	this.config = {
