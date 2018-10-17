@@ -15,7 +15,8 @@ gulp.task('inject', done => {
     return gulp.src([
             'js/inject.js',
             'js/inject/inject-msg.js',
-            'js/inject/inject-store.js'
+            'js/inject/inject-store.js',
+            'js/inject/inject-events.js'
         ]).pipe(concat('inject.js'))
           .pipe(gulp.dest('build/'))
 });
