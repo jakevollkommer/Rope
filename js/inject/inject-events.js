@@ -20,23 +20,7 @@ ContentScript.prototype.addListeners = function() {
 
             console.log("clicked");
 
-            // var popup = document.getElementById('myPopup');
             popup.style.visibility = 'visible';
-
-            // if (!opened) {
-
-
-            // // span.onclick = function() {
-
-
-            // // }
-            // window.onclick = function(event) {
-            //     if (event.target == modal) {
-            //         myModal.style.display = "none";
-            //     }
-            // }
-            // var sub_email = document.getElementById('emailfield').value;
-            // console.log(sub_email);
 
         });
 
@@ -65,7 +49,6 @@ function createPopup() {
     // popup.innerText = 'Share';
 
     popup.id = 'myPopup';
-
 
     // var input = document.createElement('input');
     var label = document.createElement('label');
@@ -104,11 +87,14 @@ function createPopup() {
         console.log("attempt submit");
         var shared_email = document.getElementById('sharing_email').value;
         console.log(shared_email);
-        if (shared_email == null) {
+        if (shared_email != null) {
             popup.style.visibility = 'hidden';
-            var img = document.createElement("img");
-            // img.src = chrome.runtime.getURL("img/cloud.png");
-            img.src = "img/cloud.png";
+            var div = document.createElement("DIV");
+            div.id = "cloud";
+            var img = document.createElement("IMG");
+            var imgURL = chrome.extension.getURL('pic.jpg');
+            img.src = imgURL;
+            div.appendChild(img);
             var body = document.getElementById("storyEditView");
             var l = body.lastElementChild.firstElementChild;
             l.appendChild(img);
@@ -116,8 +102,6 @@ function createPopup() {
 
 
     });
-
-
 
     popup.appendChild(label);
     popup.appendChild(input);
