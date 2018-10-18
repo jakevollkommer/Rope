@@ -97,7 +97,7 @@ function createPopup() {
             div.appendChild(img);
             var body = document.getElementById("storyEditView");
             var l = body.lastElementChild.firstElementChild;
-            l.appendChild(img);
+            l.appendChild(div);
         }
 
 
