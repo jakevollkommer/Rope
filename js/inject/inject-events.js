@@ -1,6 +1,8 @@
 // var modal = document.getElementById('myModal');
 var span = document.getElementsByClassName("close")[0];
 
+var opened = false;
+
 ContentScript.prototype.addListeners = function() {
     window.onhashchange = function(e) {
         console.log("window has changed")
@@ -17,11 +19,12 @@ ContentScript.prototype.addListeners = function() {
             console.log("clicked");
 
             var popup = document.querySelector('myPopup');
-            if (!popup) {
+            if (!popup && !opened) {
                 popup = document.createElement('div');
                 // popup.src = chrome.extension.getURL('html/myModal.html')
                 popup.style.visibility = 'hidden';
-                popup.style.width = '160px';
+                popup.style.width = '300px';
+                popup.style.height = '150px';
                 popup.style.backgroundColor = '#555';
                 popup.style.color = '#fff';
                 popup.style.textAlign = 'center';
@@ -34,8 +37,10 @@ ContentScript.prototype.addListeners = function() {
                 popup.style.marginLeft = '-80px';
                 // popup.innerText = 'Share';
 
-
                 popup.id = 'myPopup';
+
+
+
 
 
                 // var input = document.createElement('input');
@@ -44,19 +49,40 @@ ContentScript.prototype.addListeners = function() {
 
                 var input = document.createElement('input');
                 input.setAttribute('type','text');
+                input.style.backgroundColor = 'white';
+
+                var close_button = document.createElement('button');
+                close_button.setAttribute('type','close');
+                close_button.innerText = "Close";
+                close_button.style.backgroundColor = 'white';
+                //close_button.setAttribute('type','close');
 
 
-                var btnsubmit = document.createElement('INPUT');
+                var btnsubmit = document.createElement('button');
                 btnsubmit.setAttribute("type", "submit");
-                btnsubmit.setAttribute('value','Submit');
+                btnsubmit.innerText = "Submit";
+                btnsubmit.style.backgroundColor = 'white';
 
 
                 popup.appendChild(label);
                 popup.appendChild(input);
-                popup.appendChild(btnsubmit);
 
-                // popup.show()
+
+                var sub_div = document.createElement('div');
+                sub_div.appendChild(btnsubmit);
+                sub_div.appendChild(close_button);
+
+                // popup.appendChild(btnsubmit);
+                // popup.appendChild(close_button);
+
+                popup.appendChild(sub_div);
+                opened = true;
                 share_button.appendChild(popup);
+
+                close_button.addEventListener("click",function() {
+                    popup.close();
+                });
+
 
             }
 
