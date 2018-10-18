@@ -104,13 +104,16 @@ function createPopup() {
         console.log("attempt submit");
         var shared_email = document.getElementById('sharing_email').value;
         console.log(shared_email);
-        popup.style.visibility = 'hidden';
-        var img = document.createElement("img");
-        // img.src = chrome.runtime.getURL("img/cloud.png");
-        img.src = "img/cloud.png";
-        var body = document.getElementById("storyEditView");
-        var l = body.lastElementChild.firstElementChild;
-        l.appendChild(img);
+        if (shared_email == null) {
+            popup.style.visibility = 'hidden';
+            var img = document.createElement("img");
+            // img.src = chrome.runtime.getURL("img/cloud.png");
+            img.src = "img/cloud.png";
+            var body = document.getElementById("storyEditView");
+            var l = body.lastElementChild.firstElementChild;
+            l.appendChild(img);
+        }
+
 
     });
 
