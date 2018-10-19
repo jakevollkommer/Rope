@@ -19,5 +19,22 @@ Background.prototype.initMessageListener = function() {
 			console.log('Sync stories request');
 			sendResponse($this.userStories);
 		}
+
+		if (request.type == 'retrieveStories') {
+			console.log('Tring to grab stores from FB');
+			var user_id = request.content;
+			var stories = getUserStoriesFromFirebase(user_id);
+			sendResponse(stories);
+		}
+
+		if (request.type == 'addUsers') {
+			console.log("adding user to story");
+			var user_ids = request.content;
+			addUsersToStory(user_ids);
+			console.log('added user to story');
+			// sendResponse()
+		}
 	});
+
+
 }

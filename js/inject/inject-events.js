@@ -27,8 +27,8 @@ ContentScript.prototype.addListeners = function() {
             blur_div.style.height = '100%';
             blur_div.style.filter = "blur(15px)";
             body.appendChild(blur_div);
-  
-           
+
+
             popup.style.visibility = 'visible';
 
         });
@@ -66,7 +66,7 @@ function createPopup() {
     label.style.color = 'black';
 
     var input = document.createElement('input');
-    
+
     input.setAttribute('type','text');
     input.style.backgroundColor = 'white';
     input.style.outline = "thin solid #000000";
@@ -101,22 +101,27 @@ function createPopup() {
         var shared_email = input.value;
         //console.log(shared_email);
         if (shared_email != null) {
-            $.getScript('/build/background.js', function () {          
-                addUsersToStory(shared_email);
-                console.log("send the share"); 
-          });  
-            //addUsersToStory(shared_email);
             popup.style.visibility = 'hidden';
-            //var div = document.createElement("DIV");
-            //div.id = "cloud";
+
+
             var img = document.createElement("IMG");
             var imgURL = chrome.extension.getURL('img/cloud.png');
             img.src = imgURL;
-            //div.appendChild(img);
+
             var body = document.getElementById("storyEditView");
             var l = body.lastElementChild.firstElementChild;
-            l.appendChild(img);
-            document.getElementsByClassName(button)
+            // l.appendChild(img);
+            // document.getElementsByClassName(button)
+
+            chrome.runtime.sendMessage({content: shared_email, type: 'addUsers'}, (response) => {
+                if (!response) {
+                    // TODO probably indicate in UI that no one's signed into Rope
+                    console.log('No response');
+                    return;
+                }
+
+                console.log('added users');
+            });
         }
 
 
