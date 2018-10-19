@@ -89,15 +89,19 @@ function createPopup() {
         console.log(shared_email);
         if (shared_email != null) {
             popup.style.visibility = 'hidden';
-            var div = document.createElement("DIV");
-            div.id = "cloud";
+
+            var imgURL = chrome.extension.getURL('/img/cloud.png');
             var img = document.createElement("IMG");
-            var imgURL = chrome.extension.getURL('pic.jpg');
             img.src = imgURL;
-            div.appendChild(img);
+
+
             var body = document.getElementById("storyEditView");
+
+
             var l = body.lastElementChild.firstElementChild;
-            l.appendChild(div);
+
+            l.appendChild(img);
+
         }
 
 
