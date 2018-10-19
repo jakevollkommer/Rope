@@ -14,15 +14,21 @@
 				"tabs"
 			]
 		},
+
+
 		"content_scripts": [
 		{
 			"matches": ["http://twinery.org/*"],
+			"css": ["css/modal.css"],
 			"js": ["build/inject.js"],
 			"permissions": [
 				"tabs"
 			]
+
 		}
+
 	],
 		"permissions": ["activeTab", "storage", "tabs"],
+		"web_accessible_resources": ["img/cloud.png"],
 		"content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }
