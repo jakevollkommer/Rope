@@ -88,16 +88,18 @@ function createPopup() {
         var shared_email = document.getElementById('sharing_email').value;
         console.log(shared_email);
         if (shared_email != null) {
+            
             popup.style.visibility = 'hidden';
-            var div = document.createElement("DIV");
-            div.id = "cloud";
+            //var div = document.createElement("DIV");
+            //div.id = "cloud";
             var img = document.createElement("IMG");
-            var imgURL = chrome.extension.getURL('pic.jpg');
+            var imgURL = chrome.extension.getURL('img/cloud.png');
             img.src = imgURL;
-            div.appendChild(img);
+            //div.appendChild(img);
             var body = document.getElementById("storyEditView");
             var l = body.lastElementChild.firstElementChild;
-            l.appendChild(div);
+            l.appendChild(img);
+            document.getElementsByClassName(button)
         }
 
 
