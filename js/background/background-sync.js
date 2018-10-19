@@ -50,7 +50,8 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 
 Background.prototype.addUsersToStory = function(userEmails) {
     var $this = this;
-    let storyId = window.location.hash;
+    //let storyId = window.location.hash;
+    let storyId = 'test2'
     console.log(storyId)
     console.log('add the user');
 
@@ -65,7 +66,7 @@ Background.prototype.addUsersToStory = function(userEmails) {
 
     http.onreadystatechange = function() {//Call a function when the state changes.
         if (http.readyState == 4 && http.status == 200) {
-            alert(http.responseText);
+            console.log(http.responseText);
         }
     }
     http.send(params);
