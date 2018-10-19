@@ -49,32 +49,47 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://rope-b4dbf.firebaseio.com"
 });
-var ref = admin.database().ref('userStories')
+var ref = admin.database().ref()
+var storiesRef = ref.child('userStories')
 
 // Add users to a story
 // Story id, the updated list of users that have access to the story
 app.post('/add', function(req, res, next) {
-    console.log(req.body);
-
     emails = req.body['emails'];
-    //console.log(emails);
-    story = req.body['storyID']
-    //console.log(story);
-    return res.json({}).status(200);
-    for (email in emails){
-        console.log(email)
+    story = req.body['storyId'];
+    for (var email of emails) {
         admin.auth().getUserByEmail(email)
-          .then(function(userRecord) {
-            // See the tables above for the contents of userRecord
-            console.log("Successfully fetched user data:", userRecord.toJSON());
-            uid = userRecord.uid
-            ref.uid.push(story)
-          })
-          .catch(function(error) {
-            console.log("Error fetching user data:", error);
-          });
+            .then(function(userRecord) {
+                // userRecord contains the user object from Firebase
+                uid = userRecord.uid;
+                userRef = admin.database().ref('userStories/' + uid);
+                var children = {};
+                // Find out if the user has any stories already in the database
+                userRef.once("value")
+                    .then(function(snapshot) {
+                        var exists = false;
+                        snapshot.forEach(function(child) {
+                            children[child.key] = child.val();
+                            // this story is already shared with the user, do nothing
+                            if (child.val() == story) {
+                                exists = true
+                                return;
+                            };
+                        });
+                        // TODO notify the original user that the story is already shared?
+                        if (exists) { return; };
+                        var numChildren = snapshot.numChildren();
+                        // add the new story to the user's stories
+                        children[numChildren] = story;
+                        // update Firebase so the user now has that story ID
+                        storiesRef.child(uid).set(children,console.log("added story to user"));
+                    })
+            })
+            .catch(function(error) {
+                console.log("Error fetching user data:", error);
+            });
     }
-
+    return res.json({}).status(200);
 });
 
 app.listen(3000);
