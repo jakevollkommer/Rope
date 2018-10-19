@@ -19,5 +19,11 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "firebase-admin": "^6.0.0"
   }
 }

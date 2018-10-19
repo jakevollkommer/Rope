@@ -15,6 +15,9 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 		$this.database.ref('userStories/' + userId).once('value')
 			.then(function(snapshot) {
 				const userStoriesIds = snapshot.val();
+                if (!userStoriesIds) {
+                    return reject('user has no stories');
+                }
 				const storiesQuery = userStoriesIds.map(id => {
 					return $this.database.ref('stories/' + id).once('value')
 						.then(s => stories.push(s.val()));
@@ -27,7 +30,7 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 							});
 						});
 				});
-				// 2. Get this user's stories 
+				// 2. Get this user's stories
 				Promise.all(storiesQuery)
 					.then(storiesInDB => {
 						// 3. Get the passages of those stories
@@ -44,3 +47,26 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 			});
 	});
 }
+
+Background.prototype.addUsersToStory = function(userEmails) {
+    var $this = this;
+    let storyId = window.location.hash;
+    console.log(storyId)
+
+    var http = new XMLHttpRequest();
+    var url = 'http://localhost:3000/add';
+    var params = JSON.stringify({storyId: storyId, emails: userEmails});
+    console.log(params);
+    http.open('POST', url, true);
+
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-Type', 'application/json');
+
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if (http.readyState == 4 && http.status == 200) {
+            alert(http.responseText);
+        }
+    }
+    http.send(params);
+}
+
