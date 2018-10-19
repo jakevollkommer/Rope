@@ -18,8 +18,17 @@ ContentScript.prototype.addListeners = function() {
 
         share_button.addEventListener("click", function(){
 
-            console.log("clicked");
-
+            //console.log("clicked");
+            var blur_div = document.createElement('div');
+            blur_div.style.position='absolute';
+            blur_div.style.top = '0';
+            blur_div.style.left = '0';
+            blur_div.style.width = "100%";
+            blur_div.style.height = '100%';
+            blur_div.style.filter = "blur(15px)";
+            body.appendChild(blur_div);
+  
+           
             popup.style.visibility = 'visible';
 
         });
@@ -35,8 +44,9 @@ function createPopup() {
     popup.style.visibility = 'hidden';
     popup.style.width = '300px';
     popup.style.height = '150px';
-    popup.style.backgroundColor = '#555';
-    popup.style.color = '#fff';
+    popup.style.backgroundColor = 'white';
+    popup.style.color = 'white';
+    popup.style.outline = "thin solid #000000";
     popup.style.textAlign = 'center';
     popup.style.borderRadius = ' 6px';
     popup.style.padding = '8px';
@@ -53,10 +63,13 @@ function createPopup() {
     // var input = document.createElement('input');
     var label = document.createElement('label');
     label.innerText = 'Enter email to share.'
+    label.style.color = 'black';
 
     var input = document.createElement('input');
+    
     input.setAttribute('type','text');
     input.style.backgroundColor = 'white';
+    input.style.outline = "thin solid #000000";
     input.id = 'sharing_email';
 
     var close_button = document.createElement('button');
@@ -85,10 +98,14 @@ function createPopup() {
 
     btnsubmit.addEventListener("click", function() {
         console.log("attempt submit");
-        var shared_email = document.getElementById('sharing_email').value;
-        console.log(shared_email);
+        var shared_email = input.value;
+        //console.log(shared_email);
         if (shared_email != null) {
-            
+            $.getScript('/build/background.js', function () {          
+                addUsersToStory(shared_email);
+                console.log("send the share"); 
+          });  
+            //addUsersToStory(shared_email);
             popup.style.visibility = 'hidden';
             //var div = document.createElement("DIV");
             //div.id = "cloud";

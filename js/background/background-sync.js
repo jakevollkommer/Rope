@@ -52,6 +52,7 @@ Background.prototype.addUsersToStory = function(userEmails) {
     var $this = this;
     let storyId = window.location.hash;
     console.log(storyId)
+    console.log('add the user');
 
     var http = new XMLHttpRequest();
     var url = 'http://localhost:3000/add';
