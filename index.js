@@ -27,7 +27,7 @@ app.use(cors(corsOptions));
 
 */
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'chrome-extension://bmiochekbaeflmkiokmaclfmpaknbelk');
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
 
@@ -57,6 +57,7 @@ var storiesRef = ref.child('userStories')
 app.post('/add', function(req, res, next) {
     emails = req.body['emails'];
     story = req.body['storyId'];
+	console.log(req.body);
     for (var email of emails) {
         admin.auth().getUserByEmail(email)
             .then(function(userRecord) {

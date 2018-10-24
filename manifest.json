@@ -19,7 +19,7 @@
 		"content_scripts": [
 		{
 			"matches": ["http://twinery.org/*"],
-			"css": ["css/modal.css"],
+			"css": ["styles/modal.css"],
 			"js": ["build/inject.js"],
 			"permissions": [
 				"tabs"

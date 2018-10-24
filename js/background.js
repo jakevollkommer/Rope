@@ -19,5 +19,5 @@ window.onload = function() {
     var background = new Background();
     background.initFirebase();
     background.initMessageListener();
-    background.addUsersToStory(['jakevollkommer@gmail.com'])
+	console.log('init background');
 }
