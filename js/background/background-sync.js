@@ -48,10 +48,8 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
     });
 }
 
-Background.prototype.addUsersToStory = function(userEmails) {
+Background.prototype.addUsersToStory = function(userEmails, storyId) {
     var $this = this;
-    //let storyId = window.location.hash;
-    let storyId = 'test2'
     console.log(storyId)
     console.log('add the user');
 
@@ -70,5 +68,19 @@ Background.prototype.addUsersToStory = function(userEmails) {
         }
     }
     http.send(params);
+}
+
+Background.prototype.uploadStory = function(story, passages) {
+    var $this = this;
+
+    // Get a key for a new Post.
+    var newPostKey = firebase.database().ref('posts').push().key;
+
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    var updates = {};
+    updates['/stories/' + newPostKey] = story;
+    updates['/passages/' + newPostKey] = passages;
+
+    $this.database.ref().update(updates);
 }
 
