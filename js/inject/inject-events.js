@@ -122,7 +122,7 @@ ContentScript.prototype.createPopup = function() {
     let storyId = window.location.hash.split("/").pop()
 
     btnsubmit.addEventListener("click", function() {
-        $this.addUsers(input.value);
+        $this.addUsers(input.value, storyId);
         $this.uploadStory(storyId);
     });
 

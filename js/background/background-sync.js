@@ -56,7 +56,7 @@ Background.prototype.addUsersToStory = function(userEmails, storyId) {
     var http = new XMLHttpRequest();
     var url = 'http://localhost:3000/add';
     var params = JSON.stringify({storyId: storyId, emails: userEmails});
-    console.log(params);
+    console.log("params: " + params);
     http.open('POST', url, true);
 
     //Send the proper header information along with the request

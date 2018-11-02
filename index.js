@@ -77,7 +77,6 @@ app.post('/add', function(req, res, next) {
                                 return;
                             };
                         });
-                        // TODO notify the original user that the story is already shared?
                         if (exists) { return; };
                         var numChildren = snapshot.numChildren();
                         // add the new story to the user's stories
