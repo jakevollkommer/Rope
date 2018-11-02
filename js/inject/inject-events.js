@@ -30,18 +30,18 @@ ContentScript.prototype.addListeners = function() {
 }
 
 ContentScript.prototype.uploadStory = function(storyId) {
-    storyObject = window.localStorage['twine-stories-' + storyId];
+    storyObject = JSON.parse(window.localStorage['twine-stories-' + storyId]);
     passages = {};
     const localPassageIds = window.localStorage['twine-passages'].split(',');
     for (var id of localPassageIds) {
         passage = window.localStorage['twine-passages-' + id];
-        if (passage['story'] == storyId) {
-            passages.id = passage;
+        if (JSON.parse(passage)['story'] == storyId) {
+            passages[id] = JSON.parse(passage);
         }
     }
     if (storyId != null) {
         let uploadStoryRequest = {
-            story: JSON.parse(storyObject),
+            story: storyObject,
             passages: passages,
             type: 'uploadStory'
         };

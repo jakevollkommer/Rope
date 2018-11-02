@@ -73,14 +73,12 @@ Background.prototype.addUsersToStory = function(userEmails, storyId) {
 Background.prototype.uploadStory = function(story, passages) {
     var $this = this;
 
-    // Get a key for a new Post.
-    var newPostKey = firebase.database().ref('posts').push().key;
+    let ref = $this.database.ref();
+    for (key in passages) {
+        console.log(key);
+        ref.child('passages').child(key).set(passages[key]);
+    }
 
-    // Write the new post's data simultaneously in the posts list and the user's post list.
-    var updates = {};
-    updates['/stories/' + newPostKey] = story;
-    updates['/passages/' + newPostKey] = passages;
-
-    $this.database.ref().update(updates);
+    ref.child('stories').child(story['id']).set(story);
 }
 
