@@ -14,3 +14,12 @@ ContentScript.prototype.getFirebaseData = function() {
         $this.saveFirebaseDataLocally(response);
     });
 }
+
+ContentScript.prototype.sendMessage = function(requestBody) {
+    chrome.runtime.sendMessage(requestBody, (response) => {
+        if (!response) {
+            console.log('No response');
+            return;
+        }
+    });
+}

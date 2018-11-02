@@ -1,8 +1,3 @@
-// var modal = document.getElementById('myModal');
-var span = document.getElementsByClassName("close")[0];
-
-var opened = false;
-
 ContentScript.prototype.addListeners = function() {
     var $this = this;
     window.onhashchange = function(e) {
@@ -29,7 +24,10 @@ ContentScript.prototype.addListeners = function() {
     }
 }
 
-ContentScript.prototype.uploadStory = function(storyId) {
+ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
+    if (!storyId) {
+        return null;
+    }
     storyObject = JSON.parse(window.localStorage['twine-stories-' + storyId]);
     passages = {};
     const localPassageIds = window.localStorage['twine-passages'].split(',');
@@ -39,51 +37,25 @@ ContentScript.prototype.uploadStory = function(storyId) {
             passages[id] = JSON.parse(passage);
         }
     }
-    if (storyId != null) {
-        let uploadStoryRequest = {
-            story: storyObject,
-            passages: passages,
-            type: 'uploadStory'
-        };
-        chrome.runtime.sendMessage(uploadStoryRequest, (response) => {
-            console.log(response);
-            if (!response) {
-                console.log('No response');
-                return;
-            }
-            console.log('added story')
-        });
-    }
+
+    let uploadStoryRequest = {
+        story: storyObject,
+        passages: passages,
+        type: 'uploadStory'
+    };
+    return uploadStoryRequest;
 }
 
-ContentScript.prototype.addUsers = function(shared_email, storyId) {
-        console.log("attempt submit");
-        console.log("shared emails: " + shared_email);
-        if (shared_email != null) {
-            popup.style.visibility = 'hidden';
-
-            var img = document.createElement("IMG");
-            var imgURL = chrome.extension.getURL('img/cloud.png');
-            img.src = imgURL;
-
-            var body = document.getElementById("storyEditView");
-            var l = body.lastElementChild.firstElementChild;
-            let addUsersRequest = {
-                userIds: [shared_email],
-                type: 'addUsers',
-                storyId: storyId
-            };
-            chrome.runtime.sendMessage(addUsersRequest, (response) => {
-                console.log(response);
-                if (!response) {
-                    // TODO probably indicate in UI that no one's signed into Rope
-                    console.log('No response');
-                    return;
-                }
-
-                console.log('added users');
-            });
-        }
+ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
+    if (!sharedEmail || !storyId) {
+        return null;
+    }
+    let addUsersRequest = {
+        userIds: [shared_email],
+        type: 'addUsers',
+        storyId: storyId
+    };
+    return addUsersRequest;
 }
 
 ContentScript.prototype.createPopup = function() {
@@ -122,8 +94,18 @@ ContentScript.prototype.createPopup = function() {
     let storyId = window.location.hash.split("/").pop()
 
     btnsubmit.addEventListener("click", function() {
-        $this.addUsers(input.value, storyId);
-        $this.uploadStory(storyId);
+        var sharedEmail = input.value;
+        if (sharedEmail) {
+            // Hide popup
+            popup.style.visibility = 'hidden';
+            var img = document.createElement("IMG");
+            var imgURL = chrome.extension.getURL('img/cloud.png');
+            img.src = imgURL;
+            var body = document.getElementById("storyEditView");
+            var l = body.lastElementChild.firstElementChild;
+            $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
+            $this.sendMessage($this.buildUploadStoryRequest(storyId));
+        }
     });
 
 
