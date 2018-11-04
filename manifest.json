@@ -1,34 +1,34 @@
 {
-	"manifest_version": 2,
-		"name": "ROPE",
-		"description": "Add collaboration features to Twine.",
-		"version": "1",
-		"author": "Team 7330",
-		"browser_action": {
-			"default_icon": "logo.png",
-			"default_popup": "html/popup.html"
-		},
-		"background": {
-			"page": "html/background.html",
-			"permissions": [
-				"tabs"
-			]
-		},
+    "manifest_version": 2,
+        "name": "ROPE",
+        "description": "Add collaboration features to Twine.",
+        "version": "1",
+        "author": "Team 7330",
+        "browser_action": {
+            "default_icon": "logo.png",
+            "default_popup": "html/popup.html"
+        },
+        "background": {
+            "page": "html/background.html",
+            "permissions": [
+                "tabs"
+            ]
+        },
 
 
-		"content_scripts": [
-		{
-			"matches": ["http://twinery.org/*"],
-			"css": ["styles/modal.css"],
-			"js": ["build/inject.js"],
-			"permissions": [
-				"tabs"
-			]
+        "content_scripts": [
+        {
+            "matches": ["http://twinery.org/*"],
+            "css": ["styles/modal.css"],
+            "js": ["build/inject.js"],
+            "permissions": [
+                "tabs"
+            ]
 
-		}
+        }
 
-	],
-		"permissions": ["activeTab", "storage", "tabs"],
-		"web_accessible_resources": ["img/cloud.png"],
-		"content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
+    ],
+        "permissions": ["activeTab", "storage", "tabs"],
+        "web_accessible_resources": ["img/cloud.png"],
+        "content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }

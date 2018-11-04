@@ -19,5 +19,5 @@ window.onload = function() {
     var background = new Background();
     background.initFirebase();
     background.initMessageListener();
-	console.log('init background');
+    console.log('init background');
 }

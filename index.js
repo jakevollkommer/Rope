@@ -57,7 +57,7 @@ var storiesRef = ref.child('userStories')
 app.post('/add', function(req, res, next) {
     emails = req.body['emails'];
     story = req.body['storyId'];
-	console.log(req.body);
+    console.log(req.body);
     for (var email of emails) {
         admin.auth().getUserByEmail(email)
             .then(function(userRecord) {
