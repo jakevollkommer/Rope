@@ -10,15 +10,27 @@ ContentScript.prototype.addListeners = function() {
         l.appendChild(share_button);
 
         // createPopup();
-        var popup = $this.createPopup();
-        popup.setAttribute("class", "modal");
-        body.insertBefore(popup,body.childNodes[1]);
+        var xmlHttp = null;
+
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", chrome.extension.getURL ("html/sharePopup.html"), false );
+        xmlHttp.send( null );
+
+        var inject  = document.createElement("div");
+        inject.innerHTML = xmlHttp.responseText
+        document.body.insertBefore (inject, document.body.firstChild);
+
+        // document.getElementById("myPopup").visibility = 'visible';
+        // var popup = $this.createPopup();
+        // popup.setAttribute("class", "modal");
+        // body.insertBefore(popup,body.childNodes[1]);
 
         share_button.addEventListener("click", function(){
             var blur_div = document.createElement('div');
             blur_div.setAttribute("class", "blur-effect");
             body.appendChild(blur_div);
-            popup.style.visibility = 'visible';
+            var pop = document.getElementById("myPopup")
+            pop.style.visibility = 'visible';
         });
 
     }
