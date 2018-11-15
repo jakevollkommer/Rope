@@ -42,6 +42,10 @@ ContentScript.prototype.addListeners = function() {
         var pop = document.getElementById("myPopup");
 
         /*Button listeners*/
+        share_button.addEventListener("click", function(){
+            var pop = document.getElementById("myPopup")
+            pop.style.visibility = 'visible';
+        });
         submitBtn.addEventListener("click", function() { 
             var sharedEmail = input.value;
             input.value = "";
@@ -67,7 +71,6 @@ ContentScript.prototype.addListeners = function() {
         });
     }
 };
-
 
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
     if (!storyId) {
