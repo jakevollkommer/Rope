@@ -42,7 +42,7 @@ ContentScript.prototype.addListeners = function() {
         var pop = document.getElementById("myPopup");
 
         /*Button listeners*/
-        share_button.addEventListener("click", function(){
+        shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
         });
