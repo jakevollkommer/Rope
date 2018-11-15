@@ -32,9 +32,37 @@ ContentScript.prototype.addListeners = function() {
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
         });
+        var btnSubmit = document.getElementById("btnSubmit");
+
+        btnSubmit.addEventListener("click", function() {
+            var input = document.getElementById("inputSubmit");
+            var sharedEmail = input.value;
+            if (sharedEmail) {
+                // Hide popup
+                var popup = document.getElementById("myPopup");
+                popup.style.visibility = 'hidden';
+                var img = document.createElement("IMG");
+                var imgURL = chrome.extension.getURL('img/cloud.png');
+                img.src = imgURL;
+                var body = document.getElementById("storyEditView");
+                var l = body.lastElementChild.firstElementChild;
+                $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
+                $this.sendMessage($this.buildUploadStoryRequest(storyId));
+            }
+        });
+
+        var closeBtn = document.getElementById("closeButton");
+        closeBtn.addEventListener("click", function() {
+
+            var pop = document.getElementById("myPopup");
+            pop.style.visibility = 'hidden';
+            console.log("closeing");
+
+        })
+
 
     }
-}
+};
 
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
     if (!storyId) {
