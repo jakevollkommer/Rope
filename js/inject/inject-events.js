@@ -54,14 +54,19 @@ ContentScript.prototype.addListeners = function() {
                 pop.style.visibility = 'hidden';
                 
                 var multipleEmails = sharedEmail.split(",");
-                for (i = 0; i < multipleEmails.length; i++) {
-                    $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
-                }
-                $this.sendMessage($this.buildUploadStoryRequest(storyId));
+                // for (i = 0; i < multipleEmails.length; i++) {
+                    // $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
+                // }
+                // $this.sendMessage($this.buildUploadStoryRequest(storyId));
 
-                var img = document.createElement("IMG");
-                img.src = chrome.extension.getURL('img/cloud.png');
-                shareBtn.appendChild(img);
+                // var img = document.createElement("IMG");
+                // img.src = chrome.extension.getURL('img/cloud.png');
+                var e = document.createElement("label");
+                e.setAttribute("class", "cloud_button");
+                e.style.padding = '25px';
+                e.innerHTML = '<i class="fa fa-cloud"></i>';
+
+                shareBtn.appendChild(e);
             }
         });
         

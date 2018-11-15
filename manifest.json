@@ -29,6 +29,6 @@
 
     ],
         "permissions": ["activeTab", "storage", "tabs"],
-        "web_accessible_resources": ["img/cloud.png", "html/sharePopup.html", "html/pull.html"],
+        "web_accessible_resources": ["html/sharePopup.html", "html/pull.html"],
         "content_security_policy": "script-src 'self' https://*.gstatic.com https://*.firebaseio.com; object-src 'self'"
 }
