@@ -1,4 +1,4 @@
-
+/*On laod of home page */
 ContentScript.prototype.addListeners = function() {
     var $this = this;
 
@@ -6,15 +6,23 @@ ContentScript.prototype.addListeners = function() {
     xmlHttp.open( "GET", chrome.extension.getURL ("html/pull.html"), false );
     xmlHttp.send( null );
 
+    //Pull from cloud button
     var li  = document.createElement("li");
     li.innerHTML = xmlHttp.responseText;
     var nav_list = document.getElementsByClassName("plain");
-    console.log(nav_list);
     var child = nav_list[0].childNodes;
-    console.log(child);
     nav_list[0].insertBefore (li, child[7]);
 
-
+    // Delete story from cloud button
+    
+    var deleteList  = document.createElement("li");
+    deleteList.innerText = "Delete from cloud";
+    var dropdown = document.getElementsByClassName("divider");
+    //dropdown.childNodes.append(deleteList)
+    //console.log(dropdown.childNodes)
+    //[deleteList].concat(Array.from(document.getElementsByClassName('divider')))
+    //dropdown.parentNode.insertBefore(deleteList, dropdown.nextSibling);
+    
 
     window.onhashchange = function(e) {
 
@@ -31,7 +39,7 @@ ContentScript.prototype.addListeners = function() {
         xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", chrome.extension.getURL ("html/sharePopup.html"), false );
         xmlHttp.send( null );
-        var inject  = document.createElement("div");
+        var inject = document.createElement("div");
 
         inject.innerHTML = xmlHttp.responseText
         document.body.insertBefore(inject, document.body.firstChild);
