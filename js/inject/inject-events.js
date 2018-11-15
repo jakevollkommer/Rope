@@ -1,125 +1,121 @@
-// var modal = document.getElementById('myModal');
-var span = document.getElementsByClassName("close")[0];
-
-var opened = false;
-
+/*On laod of home page */
 ContentScript.prototype.addListeners = function() {
+    var $this = this;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", chrome.extension.getURL ("html/pull.html"), false );
+    xmlHttp.send( null );
+
+    //Pull from cloud button
+    var li  = document.createElement("li");
+    li.innerHTML = xmlHttp.responseText;
+    var nav_list = document.getElementsByClassName("plain");
+    var child = nav_list[0].childNodes;
+    nav_list[0].insertBefore (li, child[7]);
+
+    // Delete story from cloud button
+    
+    var deleteList  = document.createElement("li");
+    deleteList.innerText = "Delete from cloud";
+    var dropdown = document.getElementsByClassName("divider");
+    //dropdown.childNodes.append(deleteList)
+    //console.log(dropdown.childNodes)
+    //[deleteList].concat(Array.from(document.getElementsByClassName('divider')))
+    //dropdown.parentNode.insertBefore(deleteList, dropdown.nextSibling);
+    
+
     window.onhashchange = function(e) {
-        console.log("window has changed")
-        var share_button = document.createElement("button")
-        share_button.innerText = "Share"
+
+        /*Inject share button on toolbar */
+        var shareBtn = document.createElement("button")
+        shareBtn.setAttribute("class", "share-button");
+        shareBtn.innerText = "Share"
         var body = document.getElementById("storyEditView");
         var l = body.lastElementChild.firstElementChild;
-        l.appendChild(share_button);
+        l.appendChild(shareBtn);
 
-        // createPopup();
-        var popup = createPopup();
-        body.insertBefore(popup,body.childNodes[1]);
+        /*Inject share with others popup on screen */
+        var xmlHttp = null;
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", chrome.extension.getURL ("html/sharePopup.html"), false );
+        xmlHttp.send( null );
+        var inject = document.createElement("div");
 
-        share_button.addEventListener("click", function(){
+        inject.innerHTML = xmlHttp.responseText
+        document.body.insertBefore(inject, document.body.firstChild);
+        /* Go ahead and define all the buttons*/
+        var input = document.getElementById("inputSubmit");
+        var submitBtn = document.getElementById("btnSubmit");
+        var closeBtn = document.getElementById("closeButton");
+        var pop = document.getElementById("myPopup");
 
-            console.log("clicked");
-
-            popup.style.visibility = 'visible';
-
+        /*Button listeners*/
+        shareBtn.addEventListener("click", function(){
+            var pop = document.getElementById("myPopup")
+            pop.style.visibility = 'visible';
         });
+        submitBtn.addEventListener("click", function() { 
+            var sharedEmail = input.value;
+            input.value = "";
+            if (sharedEmail) {
+                
+                pop.style.visibility = 'hidden';
+                
+                var multipleEmails = sharedEmail.split(",");
+                // for (i = 0; i < multipleEmails.length; i++) {
+                    // $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
+                // }
+                // $this.sendMessage($this.buildUploadStoryRequest(storyId));
 
+                // var img = document.createElement("IMG");
+                // img.src = chrome.extension.getURL('img/cloud.png');
+                var e = document.createElement("label");
+                e.setAttribute("class", "cloud_button");
+                e.style.padding = '25px';
+                e.innerHTML = '<i class="fa fa-cloud"></i>';
+
+                shareBtn.appendChild(e);
+            }
+        });
+        
+        closeBtn.addEventListener("click", function() {
+            pop.style.visibility = 'hidden'; 
+            input.value = "";
+        });
     }
-}
+};
 
-function createPopup() {
-    popup = document.createElement('div');
-    // popup.src = chrome.extension.getURL('html/myModal.html')
-    //popup.position = absolute;
-    popup.style.position = 'absolute';
-    popup.style.visibility = 'hidden';
-    popup.style.width = '300px';
-    popup.style.height = '150px';
-    popup.style.backgroundColor = '#555';
-    popup.style.color = '#fff';
-    popup.style.textAlign = 'center';
-    popup.style.borderRadius = ' 6px';
-    popup.style.padding = '8px';
-
-    popup.style.zIndex = '100';
-    popup.style.bottom = '125%';
-    popup.style.left = '30%';
-    popup.style.top = '25%';
-    popup.style.marginLeft = '-80px';
-    // popup.innerText = 'Share';
-
-    popup.id = 'myPopup';
-
-    // var input = document.createElement('input');
-    var label = document.createElement('label');
-    label.innerText = 'Enter email to share.'
-
-    var input = document.createElement('input');
-    input.setAttribute('type','text');
-    input.style.backgroundColor = 'white';
-    input.id = 'sharing_email';
-
-    var close_button = document.createElement('button');
-    close_button.setAttribute('type','close');
-    close_button.innerText = "Close";
-    close_button.style.backgroundColor = '#ec2133';
-    close_button.style.marginTop = '10px';
-    close_button.style.marginRight = '5px';
-    close_button.style.marginLeft = '5px';
-
-
-    close_button.addEventListener("click",function() {
-        console.log("tried to close");
-        popup.style.visibility = 'hidden';
-    });
-
-
-    var btnsubmit = document.createElement('button');
-    btnsubmit.setAttribute("type", "submit");
-    btnsubmit.innerText = "Submit";
-    btnsubmit.style.backgroundColor = '#0bda50';
-    btnsubmit.style.marginTop = '10px';
-    btnsubmit.style.marginRight = '5px';
-    btnsubmit.style.marginLeft = '5px';
-
-
-    btnsubmit.addEventListener("click", function() {
-        console.log("attempt submit");
-        var shared_email = document.getElementById('sharing_email').value;
-        console.log(shared_email);
-        if (shared_email != null) {
-            popup.style.visibility = 'hidden';
-
-            var imgURL = chrome.extension.getURL('/img/cloud.png');
-            var img = document.createElement("IMG");
-            img.src = imgURL;
-
-
-            var body = document.getElementById("storyEditView");
-
-
-            var l = body.lastElementChild.firstElementChild;
-
-            l.appendChild(img);
-
+ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
+    if (!storyId) {
+        return null;
+    }
+    storyObject = JSON.parse(window.localStorage['twine-stories-' + storyId]);
+    passages = {};
+    const localPassageIds = window.localStorage['twine-passages'].split(',');
+    for (var id of localPassageIds) {
+        passage = window.localStorage['twine-passages-' + id];
+        if (JSON.parse(passage)['story'] == storyId) {
+            passages[id] = JSON.parse(passage);
         }
+    }
 
-
-    });
-
-    popup.appendChild(label);
-    popup.appendChild(input);
-
-
-    var sub_div = document.createElement('div');
-    sub_div.appendChild(btnsubmit);
-    sub_div.appendChild(close_button);
-
-    // popup.appendChild(btnsubmit);
-    // popup.appendChild(close_button);
-
-    popup.appendChild(sub_div);
-    opened = true;
-    return popup;
-    // share_button.appendChild(popup);
+    let uploadStoryRequest = {
+        story: storyObject,
+        passages: passages,
+        type: 'uploadStory'
+    };
+    return uploadStoryRequest;
 }
+
+ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
+    if (!sharedEmail || !storyId) {
+        return null;
+    }
+    let addUsersRequest = {
+        userIds: [shared_email],
+        type: 'addUsers',
+        storyId: storyId
+    };
+    return addUsersRequest;
+}
+
