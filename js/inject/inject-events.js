@@ -41,6 +41,13 @@ ContentScript.prototype.addListeners = function() {
         xmlHttp.send( null );
         var inject = document.createElement("div");
 
+        // /*Inject manage users popup on screen */
+        // var xmlHttp = null;
+        // xmlHttp = new XMLHttpRequest();
+        // xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
+        // xmlHttp.send( null );
+        // var inject = document.createElement("div");
+
         inject.innerHTML = xmlHttp.responseText
         document.body.insertBefore(inject, document.body.firstChild);
         /* Go ahead and define all the buttons*/
@@ -48,12 +55,14 @@ ContentScript.prototype.addListeners = function() {
         var submitBtn = document.getElementById("btnSubmit");
         var closeBtn = document.getElementById("closeButton");
         var pop = document.getElementById("myPopup");
+        var manageBtn = document.getElementById("btnManage");
+        var manage = document.getElementById
 
         /*Button listeners*/
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
-        });
+        });       
         submitBtn.addEventListener("click", function() { 
             var sharedEmail = input.value;
             input.value = "";
@@ -62,25 +71,35 @@ ContentScript.prototype.addListeners = function() {
                 pop.style.visibility = 'hidden';
                 
                 var multipleEmails = sharedEmail.split(",");
-                // for (i = 0; i < multipleEmails.length; i++) {
-                    // $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
-                // }
-                // $this.sendMessage($this.buildUploadStoryRequest(storyId));
-
-                // var img = document.createElement("IMG");
-                // img.src = chrome.extension.getURL('img/cloud.png');
+                for (i = 0; i < multipleEmails.length; i++) {
+                    $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
+                }
+                $this.sendMessage($this.buildUploadStoryRequest(storyId));
                 var e = document.createElement("label");
                 e.setAttribute("class", "cloud_button");
                 e.style.padding = '25px';
                 e.innerHTML = '<i class="fa fa-cloud"></i>';
-
                 shareBtn.appendChild(e);
             }
         });
-        
         closeBtn.addEventListener("click", function() {
             pop.style.visibility = 'hidden'; 
             input.value = "";
+        });
+
+        manageBtn.addEventListener("click", function(){
+            console.log('manage button');
+            /*Inject manage users popup on screen */
+            var xmlHttp = null;
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
+            xmlHttp.send( null );
+            var inject = document.createElement("div");
+            inject.innerHTML = xmlHttp.responseText
+            document.body.insertBefore(inject, document.body.firstChild);
+
+            var pop = document.getElementById("usersPop")
+            pop.style.visibility = 'visible';
         });
     }
 };
