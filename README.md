@@ -3,7 +3,7 @@ An extension to Twine which allows users to collaborate in real time.
 
 # Setup
 
-###Pre-requisites
+### Pre-requisites
 1. Must be using Google Chrome
 
 ### Dependent libraries that must be installed
