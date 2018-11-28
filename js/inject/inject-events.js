@@ -89,6 +89,7 @@ ContentScript.prototype.addListeners = function() {
         manageBtn.addEventListener("click", function(){
             console.log('manage button');
             /*Inject manage users popup on screen */
+            document.getElementById("myPopup").style.visibility = 'hidden';
             var xmlHttp = null;
             xmlHttp = new XMLHttpRequest();
             xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
@@ -100,6 +101,11 @@ ContentScript.prototype.addListeners = function() {
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
         });
+        document.getElementById("managecloseButton").addEventListener("click", function() {
+            pop.style.visibility = 'hidden';
+            input.value = "";
+        });
+
     }
 };
 
@@ -210,9 +216,6 @@ ContentScript.prototype.createPopup = function() {
     var sub_div = document.createElement('div');
     sub_div.appendChild(btnsubmit);
     sub_div.appendChild(close_button);
-
-    // popup.appendChild(btnsubmit);
-    // popup.appendChild(close_button);
 
     popup.appendChild(sub_div);
     opened = true;
