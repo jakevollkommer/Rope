@@ -3,13 +3,21 @@ An extension to Twine which allows users to collaborate in real time.
 
 # Setup
 
-1. Have node.js installed
-2. Clone repo
-3. `npm install`
-4. Make sure that gulp version 3.9.1 is installed. (npm install 3.9.1 --save)
-5. `gulp`
-6. `npm install --save-dev gulp-watch`
-7. Add to chrome://extensions
+## Pre-requisites
+1. Must be using Google Chrome
+
+## Dependent libraries that must be installed
+1. Install node.js from nodejs.org
+2. Run `npm install` in the command line
+
+## Download instructions
+1. `git clone github.com/jakevollkommer/Rope.git`
+1. `npm install 3.9.1 --save` to ensure you have gulp version 3.9.1
+2. `gulp`
+3. `npm install --save-dev gulp-watch`
+
+## Installation of actual application
+1. Add the Rope folder to chrome://extensions
 
 # Using Rope
 
@@ -30,3 +38,7 @@ An extension to Twine which allows users to collaborate in real time.
 When a story is shared with you, you can sign into Rope and refresh the page to
 pull the story and its passages from the cloud.
 
+# Troubleshooting
+There is a known bug where sometimes if you refresh the page within the story
+interface, the share button will disappear. If this happens, just go back and
+re-open the story.
