@@ -56,12 +56,15 @@ ContentScript.prototype.addListeners = function() {
         var pop = document.getElementById("myPopup");
         var manageBtn = document.getElementById("btnManage");
         var manage = document.getElementById
+        let storyId = window.location.hash.split("/").pop()
 
         /*Button listeners*/
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
         });
+
+
         submitBtn.addEventListener("click", function() {
             var sharedEmail = input.value;
             input.value = "";
@@ -78,6 +81,11 @@ ContentScript.prototype.addListeners = function() {
                 e.setAttribute("class", "cloud_button");
                 e.style.padding = '25px';
                 e.innerHTML = '<i class="fa fa-cloud"></i>';
+                console.log("this is hte sharedEmail")
+                console.log(sharedEmail)
+                $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
+                $this.sendMessage($this.buildUploadStoryRequest(storyId));
+                console.log(storyId);
                 shareBtn.appendChild(e);
             }
         });
@@ -136,7 +144,7 @@ ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
         return null;
     }
     let addUsersRequest = {
-        userIds: [shared_email],
+        userIds: [sharedEmail],
         type: 'addUsers',
         storyId: storyId
     };
@@ -158,67 +166,3 @@ ContentScript.prototype.initFirepad = function() {
     });
 }
 
-ContentScript.prototype.createPopup = function() {
-    let $this = this;
-    popup = document.createElement('div');
-    // popup.src = chrome.extension.getURL('html/myModal.html')
-    //popup.position = absolute;
-    // popup.innerText = 'Share';
-
-    popup.id = 'myPopup';
-
-    // var input = document.createElement('input');
-    var label = document.createElement('label');
-    label.innerText = 'Enter email to share.'
-    label.style.color = 'black';
-
-    var input = document.createElement('input');
-    input.setAttribute('type','text');
-    input.setAttribute('class','modal-input');
-
-    var close_button = document.createElement('button');
-    close_button.setAttribute('class','modal-button--close');
-    close_button.innerText = "Close";
-
-    close_button.addEventListener("click",function() {
-        console.log("tried to close");
-        popup.style.visibility = 'hidden';
-    });
-
-
-    var btnsubmit = document.createElement('button');
-    btnsubmit.setAttribute("type", "submit");
-    btnsubmit.setAttribute("class", "modal-button--submit");
-    btnsubmit.innerText = "Submit";
-
-    let storyId = window.location.hash.split("/").pop()
-
-    btnsubmit.addEventListener("click", function() {
-        var sharedEmail = input.value;
-        if (sharedEmail) {
-            // Hide popup
-            popup.style.visibility = 'hidden';
-            var img = document.createElement("IMG");
-            var imgURL = chrome.extension.getURL('img/cloud.png');
-            img.src = imgURL;
-            var body = document.getElementById("storyEditView");
-            var l = body.lastElementChild.firstElementChild;
-            $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
-            $this.sendMessage($this.buildUploadStoryRequest(storyId));
-        }
-    });
-
-
-    popup.appendChild(label);
-    popup.appendChild(input);
-
-
-    var sub_div = document.createElement('div');
-    sub_div.appendChild(btnsubmit);
-    sub_div.appendChild(close_button);
-
-    popup.appendChild(sub_div);
-    opened = true;
-    return popup;
-    // share_button.appendChild(popup);
-}
