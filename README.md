@@ -42,3 +42,22 @@ pull the story and its passages from the cloud.
 There is a known bug where sometimes if you refresh the page within the story
 interface, the share button will disappear. If this happens, just go back and
 re-open the story.
+
+# Release Notes
+> ## v1.1.2
+>
+> #### New Features:
+>
+> - Added story sharing via the cloud
+> - Multiple users can share stories
+> -
+>
+> #### Bug Fixes:
+>
+> - Stories will now be shared with user's that previously had no stories
+> - Stories were being overwritten, we now store them using unique ID's
+>
+> #### Known Bugs:
+>
+> - Sometimes when the page is refreshed in the stories interface, the share
+>   button disappears
