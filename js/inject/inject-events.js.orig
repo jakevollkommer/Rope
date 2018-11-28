@@ -1,3 +1,4 @@
+/*On load of home page */
 ContentScript.prototype.addListeners = function() {
     var $this = this;
 
@@ -81,6 +82,18 @@ ContentScript.prototype.addListeners = function() {
             pop.style.visibility = 'hidden';
             input.value = "";
         });
+<<<<<<< HEAD
+
+        let passageElements = document.getElementsByClassName('passage');
+
+        for (let i = 0; i < imageArray.length; i++) {
+            passageElements[i].addEventListener("click", function() {
+                $this.initFirepad();
+            });
+        }
+
+=======
+>>>>>>> 5b463c49cdb3ee257fc4b3685308d717637ecbf6
     }
 };
 
@@ -118,6 +131,7 @@ ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
     return addUsersRequest;
 }
 
+<<<<<<< HEAD
 ContentScript.prototype.initFirepad = function() {
     // Get Firebase Database reference.
     var firepadRef = $this.database.ref();
@@ -200,3 +214,5 @@ ContentScript.prototype.createPopup = function() {
     return popup;
     // share_button.appendChild(popup);
 }
+=======
+>>>>>>> 5b463c49cdb3ee257fc4b3685308d717637ecbf6

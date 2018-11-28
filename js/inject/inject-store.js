@@ -38,10 +38,13 @@ ContentScript.prototype.saveStoriesLocally = function(stories) {
  */
 ContentScript.prototype.savePassagesLocally = function(passages) {
     // Set twine-passages and twine-passage-*
+
     const passageIds  = passages.map(passage => passage.id);
+
     if (!window.localStorage['twine-passages']) {
         window.localStorage['twine-passages'] = '';
     }
+    // Append the local list of passage ids.
     const localPassageIds = window.localStorage['twine-passages'].split(',');
     passageIds.map(id => {
         if (!localPassageIds.includes(id)) {
@@ -52,6 +55,7 @@ ContentScript.prototype.savePassagesLocally = function(passages) {
             }
         }
     });
+    // Store passage objects locally.
     passages.map(passage => {
         window.localStorage['twine-passages-' + passage.id] = JSON.stringify(passage);
     });
