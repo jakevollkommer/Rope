@@ -19,8 +19,8 @@
         "content_scripts": [
         {
             "matches": ["http://twinery.org/*"],
-            "css": ["styles/modal.css"],
-            "js": ["build/inject.js"],
+            "css": ["styles/codemirror.css", "styles/firepad.css", "styles/modal.css"],
+            "js": ["js/vendor/codemirror.js", "js/vendor/firepad.min.js", "build/inject.js"],
             "permissions": [
                 "tabs"
             ]

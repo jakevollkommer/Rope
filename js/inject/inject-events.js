@@ -21,6 +21,14 @@ ContentScript.prototype.addListeners = function() {
             popup.style.visibility = 'visible';
         });
 
+        let passageElements = document.getElementsByClassName('passage');
+
+        for (let i = 0; i < imageArray.length; i++) {
+            passageElements[i].addEventListener("click", function() {
+                $this.initFirepad();
+            });
+        }
+
     }
 }
 
@@ -56,6 +64,21 @@ ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
         storyId: storyId
     };
     return addUsersRequest;
+}
+
+ContentScript.prototype.initFirepad = function() {
+    // Get Firebase Database reference.
+    var firepadRef = $this.database.ref();
+
+    // Create CodeMirror (with lineWrapping on).
+    var codeMirror = CodeMirror(document.getElementById('firepad'), { lineWrapping: true });
+
+    // Create Firepad (with rich text toolbar and shortcuts enabled).
+    var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
+        richTextShortcuts: true,
+        richTextToolbar: true,
+        defaultText: 'Hello, World!'
+    });
 }
 
 ContentScript.prototype.createPopup = function() {
