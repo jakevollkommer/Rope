@@ -1,0 +1,34 @@
+.management {
+  position: absolute;
+  visibility: hidden;
+  width: 300px;
+  height: 225px;
+  background-color: white;
+  color: black;
+  outline: thin solid #000000;
+  text-align: center;
+  border-radius: 6px;
+  /* padding: 8px; */
+  z-index: 100;
+  bottom: 125%;
+  top: 25%;
+  left: 45%;
+  margin-left: -80px;
+  
+}
+
+
+.modal-button--close {
+	background-color: #ec2133;
+	margin-top: 10px;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.modal-button--submit {
+	background-color: #0bda50;
+	margin-top: 10px;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+

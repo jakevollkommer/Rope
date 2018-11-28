@@ -108,6 +108,16 @@ ContentScript.prototype.addListeners = function() {
 
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
+
+            var table = document.getElementById("userTable");
+            // for (i = 0; i < users.length; i++) {
+            //     var row = table.insertRow(1);
+            //     var cell1 = row.insertCell(0);
+                // var cell2 = row.insertCell(1);
+            //     cell1.innerHTML = user.email;
+            // }
+            
+
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             pop.style.visibility = 'hidden';
