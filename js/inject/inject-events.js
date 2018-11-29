@@ -39,16 +39,16 @@ ContentScript.prototype.addListeners = function() {
         xmlHttp.open( "GET", chrome.extension.getURL ("html/sharePopup.html"), false );
         xmlHttp.send( null );
         var inject = document.createElement("div");
-
-        // /*Inject manage users popup on screen */
-        // var xmlHttp = null;
-        // xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
-        // xmlHttp.send( null );
-        // var inject = document.createElement("div");
-
         inject.innerHTML = xmlHttp.responseText
         document.body.insertBefore(inject, document.body.firstChild);
+
+        var xmlHttp2 = null;
+        xmlHttp2 = new XMLHttpRequest();
+        xmlHttp2.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
+        xmlHttp2.send( null );
+        var inject2 = document.createElement("div");
+        inject2.innerHTML = xmlHttp2.responseText
+        document.body.insertBefore(inject2, document.body.firstChild);
         /* Go ahead and define all the buttons*/
         var input = document.getElementById("inputSubmit");
         var submitBtn = document.getElementById("btnSubmit");
@@ -81,7 +81,6 @@ ContentScript.prototype.addListeners = function() {
                 e.setAttribute("class", "cloud_button");
                 e.style.padding = '25px';
                 e.innerHTML = '<i class="fa fa-cloud"></i>';
-                console.log("this is hte sharedEmail")
                 console.log(sharedEmail)
                 $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
                 $this.sendMessage($this.buildUploadStoryRequest(storyId));
@@ -98,13 +97,7 @@ ContentScript.prototype.addListeners = function() {
             console.log('manage button');
             /*Inject manage users popup on screen */
             document.getElementById("myPopup").style.visibility = 'hidden';
-            var xmlHttp = null;
-            xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
-            xmlHttp.send( null );
-            var inject = document.createElement("div");
-            inject.innerHTML = xmlHttp.responseText
-            document.body.insertBefore(inject, document.body.firstChild);
+            
 
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
@@ -119,9 +112,9 @@ ContentScript.prototype.addListeners = function() {
             
 
         });
+       
         document.getElementById("managecloseButton").addEventListener("click", function() {
-            pop.style.visibility = 'hidden';
-            input.value = "";
+            document.getElementById("usersPop").style.visibility = 'hidden';
         });
 
     }
