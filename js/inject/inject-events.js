@@ -52,7 +52,6 @@ ContentScript.prototype.addListeners = function() {
         /* Go ahead and define all the buttons*/
         var input = document.getElementById("inputSubmit");
         var submitBtn = document.getElementById("btnSubmit");
-        var closeBtn = document.getElementById("closeButton");
         var pop = document.getElementById("myPopup");
         var manageBtn = document.getElementById("btnManage");
         var manage = document.getElementById
@@ -88,7 +87,7 @@ ContentScript.prototype.addListeners = function() {
                 shareBtn.appendChild(e);
             }
         });
-        closeBtn.addEventListener("click", function() {
+        document.getElementById("closeButton").addEventListener("click", function() {
             pop.style.visibility = 'hidden';
             input.value = "";
         });
@@ -97,20 +96,27 @@ ContentScript.prototype.addListeners = function() {
             console.log('manage button');
             /*Inject manage users popup on screen */
             document.getElementById("myPopup").style.visibility = 'hidden';
-            
-
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
 
             var table = document.getElementById("userTable");
+            var row = table.insertRow(-1);
+            var userEmail = document.createTextNode("Hello");
+            var rmBtn = document.createElement("input");
+            rmBtn.setAttribute("type", "button");
+            rmBtn.setAttribute("value", "remove");
+            //rmBtn.setAttribute("onclick", "removeUser();");
+            rmBtn.setAttribute("class", "button");
+    
+            row.insertCell(0).appendChild(userEmail);
+            row.insertCell(1).appendChild(rmBtn);
+    
             // for (i = 0; i < users.length; i++) {
             //     var row = table.insertRow(1);
             //     var cell1 = row.insertCell(0);
                 // var cell2 = row.insertCell(1);
             //     cell1.innerHTML = user.email;
             // }
-            
-
         });
        
         document.getElementById("managecloseButton").addEventListener("click", function() {
