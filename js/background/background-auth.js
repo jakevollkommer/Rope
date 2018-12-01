@@ -13,13 +13,14 @@ Background.prototype.initFirebase = function() {
 Background.prototype.redirectUserAfterLogin = function(user) {
     var $this = this;
     if (user) {
-        var userId = firebase.auth().currentUser.uid;
+        var uid = firebase.auth().currentUser.uid;
+        $this.userId = uid;
 
         chrome.tabs.create({
             url: "http://twinery.org/2/#!/stories"
         }, () => {
             // Cache the latest copy of this user's stories
-            $this.getUserStoriesFromFirebase(userId)
+            $this.getUserStoriesFromFirebase(uid)
                 .then(data => {
                     $this.userStories = data;
                 })

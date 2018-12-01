@@ -63,27 +63,20 @@ ContentScript.prototype.addListeners = function() {
             pop.style.visibility = 'visible';
         });
 
-
         submitBtn.addEventListener("click", function() {
-            var sharedEmail = input.value;
+            var userEmails = input.value;
             input.value = "";
-            if (sharedEmail) {
+            if (userEmails) {
 
                 pop.style.visibility = 'hidden';
 
-                var multipleEmails = sharedEmail.split(",");
-                for (i = 0; i < multipleEmails.length; i++) {
-                    $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
-                }
+                var multipleEmails = userEmails.split(",");
                 $this.sendMessage($this.buildUploadStoryRequest(storyId));
+                $this.sendMessage($this.buildAddUsersRequest(multipleEmails, storyId));
                 var e = document.createElement("label");
                 e.setAttribute("class", "cloud_button");
                 e.style.padding = '25px';
                 e.innerHTML = '<i class="fa fa-cloud"></i>';
-                console.log(sharedEmail)
-                $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
-                $this.sendMessage($this.buildUploadStoryRequest(storyId));
-                console.log(storyId);
                 shareBtn.appendChild(e);
             }
         });
@@ -107,18 +100,21 @@ ContentScript.prototype.addListeners = function() {
             rmBtn.setAttribute("value", "remove");
             //rmBtn.setAttribute("onclick", "removeUser();");
             rmBtn.setAttribute("class", "button");
-    
+
             row.insertCell(0).appendChild(userEmail);
             row.insertCell(1).appendChild(rmBtn);
-    
-            // for (i = 0; i < users.length; i++) {
-            //     var row = table.insertRow(1);
-            //     var cell1 = row.insertCell(0);
-                // var cell2 = row.insertCell(1);
-            //     cell1.innerHTML = user.email;
-            // }
+
+            // TODO get email from uid
+            let users = $this.sendMessage($this.getUsersRequest(storyId));
+
+            for (i = 0; i < users.length; i++) {
+                var row = table.insertRow(1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                cell1.innerHTML = users[i];
+            }
         });
-       
+
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
         });
@@ -126,7 +122,18 @@ ContentScript.prototype.addListeners = function() {
     }
 };
 
+ContentScript.prototype.getUsersRequest(storyId) {
+    let req = {
+        story: storyId;
+        type: 'getUsers'
+    }
+
+    return req;
+
+}
+
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
+    var $this = this;
     if (!storyId) {
         return null;
     }
@@ -148,12 +155,13 @@ ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
     return uploadStoryRequest;
 }
 
-ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
-    if (!sharedEmail || !storyId) {
+ContentScript.prototype.buildAddUsersRequest = function(userEmails, storyId) {
+    console.log("heyyy")
+    if (!userEmails || !storyId) {
         return null;
     }
     let addUsersRequest = {
-        userIds: [sharedEmail],
+        userEmails: userEmails,
         type: 'addUsers',
         storyId: storyId
     };

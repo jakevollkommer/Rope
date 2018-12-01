@@ -23,3 +23,4 @@ ContentScript.prototype.sendMessage = function(requestBody) {
         }
     });
 }
+

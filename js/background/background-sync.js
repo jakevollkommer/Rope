@@ -70,15 +70,26 @@ Background.prototype.addUsersToStory = function(userEmails, storyId) {
     http.send(params);
 }
 
-Background.prototype.uploadStory = function(story, passages) {
+Background.prototype.uploadStory = function(story, passages, uid) {
     var $this = this;
 
     let ref = $this.database.ref();
+    let usersRef = ref.child('stories').child(story['id']).child('users');
     for (key in passages) {
         console.log(key);
         ref.child('passages').child(key).set(passages[key]);
     }
 
-    ref.child('stories').child(story['id']).set(story);
+    //story['users'] = [uid];
+    usersRef.once("value", function(snapshot) {
+        var users = snapshot.val()
+        if(!users) {
+            story['users'] = [uid];
+            ref.child('stories').child(story['id']).set(story);
+        } else {
+            story['users'] = users;
+            ref.child('stories').child(story['id']).set(story);
+        }
+    })
 }
 
