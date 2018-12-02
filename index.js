@@ -7,6 +7,8 @@ var serviceAccount = require('./admin.json');
 var express = require('express');
 var app = express();
 var cors = require('cors');
+
+var each = require('async-each');
 /*
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,51 +58,54 @@ var storiesRef = ref.child('stories');
 // Add users to a story
 // Story id, the updated list of users that have access to the story
 app.post('/add', function(req, res, next) {
-    emails = req.body['emails'];
-    story = req.body['storyId'];
-    usersRef = storiesRef.child(story).child('users');
-    for (var email of emails) {
+    var emails = req.body['emails'];
+    var story = req.body['storyId'];
+    var users = [];
+    var usersRef = storiesRef.child(story).child('users');
+
+    function processEmail(email, next) {
         admin.auth().getUserByEmail(email)
             .then(function(userRecord) {
                 // userRecord contains the user object from Firebase
-                uid = userRecord.uid;
-                usersRef.once('value', function(snapshot) {
-                    var users = snapshot.val()
-                    if (users.indexOf(uid) == -1) {
-                        console.log("didnt have uid")
-                        users.push(uid)
-                        usersRef.set(users);
-                    } else {
-                        console.log("did have uid")
-                    }
-                });
+                var uid = userRecord.uid;
+                if (users.indexOf(uid) == -1) {
+                    users.push(uid)
+                }
 
-                userRef = admin.database().ref('userStories/' + uid);
-                var children = {};
+                var userRef = userStoriesRef.child(uid);
                 // Find out if the user has any stories already in the database
-                userRef.once("value")
-                    .then(function(snapshot) {
-                        var exists = false;
-                        snapshot.forEach(function(child) {
-                            children[child.key] = child.val();
-                            // this story is already shared with the user, do nothing
-                            if (child.val() == story) {
-                                exists = true
-                                return;
-                            };
-                        });
-                        if (exists) { return; };
-                        var numChildren = snapshot.numChildren();
-                        // add the new story to the user's stories
-                        children[numChildren] = story;
-                        // update Firebase so the user now has that story ID
-                        userStoriesRef.child(uid).set(children,console.log("added story to user"));
-                    })
+                userRef.once("value", function(snapshot) {
+                    var stories = snapshot.val()
+                    if (!stories) {
+                        var data = { };
+                        data[uid] = [story];
+                        userStoriesRef.update(data);
+                    } else if (stories.indexOf(story) == -1) {
+                        stories.push(uid);
+                        userRef.set(stories);
+                    }
+                    next();
+                });
             })
             .catch(function(error) {
                 console.log("Error fetching user data:", error);
+                next(error);
             });
     }
+    usersRef.once('value', function(snapshot) {
+        snapshot.forEach(function (snapshot) {
+            var usr = snapshot.val();
+            if (users.indexOf(usr) != -1) {
+                users.push(usr);
+            }
+        });
+
+        each(emails, processEmail, function(error) {
+            if (error) console.log(error);
+            usersRef.set(users);
+
+        });
+    });
     return res.json({}).status(200);
 });
 

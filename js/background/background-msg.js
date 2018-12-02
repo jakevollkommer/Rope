@@ -30,6 +30,7 @@ Background.prototype.initMessageListener = function() {
         if (request.type == 'addUsers') {
             console.log("adding user to story");
             var userEmails = request.userEmails;
+            userEmails.push($this.userEmail);
             let storyId = request.storyId;
             $this.addUsersToStory(userEmails, storyId);
             console.log('added user to story');

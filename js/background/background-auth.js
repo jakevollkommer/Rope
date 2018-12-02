@@ -13,8 +13,9 @@ Background.prototype.initFirebase = function() {
 Background.prototype.redirectUserAfterLogin = function(user) {
     var $this = this;
     if (user) {
-        var uid = firebase.auth().currentUser.uid;
-        $this.userId = uid;
+        var user = firebase.auth().currentUser;
+        $this.userEmail = user.email;
+        $this.userId = user.uid;
 
         chrome.tabs.create({
             url: "http://twinery.org/2/#!/stories"
