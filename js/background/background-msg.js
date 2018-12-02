@@ -42,7 +42,7 @@ Background.prototype.initMessageListener = function() {
             usersRef.once('value', function(snapshot) {
                 let users = snapshot.val();
                 sendResponse(users);
-            }
+            });
         }
 
         if (request.type == 'uploadStory') {

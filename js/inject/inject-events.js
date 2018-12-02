@@ -156,7 +156,6 @@ ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
 }
 
 ContentScript.prototype.buildAddUsersRequest = function(userEmails, storyId) {
-    console.log("heyyy")
     if (!userEmails || !storyId) {
         return null;
     }
