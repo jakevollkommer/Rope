@@ -122,9 +122,9 @@ ContentScript.prototype.addListeners = function() {
     }
 };
 
-ContentScript.prototype.getUsersRequest(storyId) {
+ContentScript.prototype.getUsersRequest = function(storyId) {
     let req = {
-        story: storyId;
+        story: storyId,
         type: 'getUsers'
     }
 

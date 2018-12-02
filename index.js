@@ -50,19 +50,31 @@ admin.initializeApp({
   databaseURL: "https://rope-b4dbf.firebaseio.com"
 });
 var ref = admin.database().ref()
-var storiesRef = ref.child('userStories')
+var userStoriesRef = ref.child('userStories');
+var storiesRef = ref.child('stories');
 
 // Add users to a story
 // Story id, the updated list of users that have access to the story
 app.post('/add', function(req, res, next) {
     emails = req.body['emails'];
     story = req.body['storyId'];
-    console.log(req.body);
+    usersRef = storiesRef.child(story).child('users');
     for (var email of emails) {
         admin.auth().getUserByEmail(email)
             .then(function(userRecord) {
                 // userRecord contains the user object from Firebase
                 uid = userRecord.uid;
+                usersRef.once('value', function(snapshot) {
+                    var users = snapshot.val()
+                    if (users.indexOf(uid) == -1) {
+                        console.log("didnt have uid")
+                        users.push(uid)
+                        usersRef.set(users);
+                    } else {
+                        console.log("did have uid")
+                    }
+                });
+
                 userRef = admin.database().ref('userStories/' + uid);
                 var children = {};
                 // Find out if the user has any stories already in the database
@@ -82,7 +94,7 @@ app.post('/add', function(req, res, next) {
                         // add the new story to the user's stories
                         children[numChildren] = story;
                         // update Firebase so the user now has that story ID
-                        storiesRef.child(uid).set(children,console.log("added story to user"));
+                        userStoriesRef.child(uid).set(children,console.log("added story to user"));
                     })
             })
             .catch(function(error) {
