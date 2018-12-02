@@ -1,3 +1,4 @@
+
 ContentScript.prototype.addListeners = function() {
     var $this = this;
 
@@ -22,9 +23,8 @@ ContentScript.prototype.addListeners = function() {
     //[deleteList].concat(Array.from(document.getElementsByClassName('divider')))
     //dropdown.parentNode.insertBefore(deleteList, dropdown.nextSibling);
 
-
+    var counting = 0;
     window.onhashchange = function(e) {
-
         /*Inject share button on toolbar */
         var shareBtn = document.createElement("button")
         shareBtn.setAttribute("class", "share-button");
@@ -56,7 +56,14 @@ ContentScript.prototype.addListeners = function() {
         var manageBtn = document.getElementById("btnManage");
         var manage = document.getElementById
         let storyId = window.location.hash.split("/").pop()
-
+        if (counting == 1) {
+            var e = document.createElement("label");
+            e.setAttribute("class", "cloud_button");
+            e.style.padding = '25px';
+            e.innerHTML = '<i class="fa fa-cloud"></i>';
+            shareBtn.appendChild(e);
+            
+        }
         /*Button listeners*/
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
@@ -73,11 +80,15 @@ ContentScript.prototype.addListeners = function() {
                 var multipleEmails = userEmails.split(",");
                 $this.sendMessage($this.buildUploadStoryRequest(storyId));
                 $this.sendMessage($this.buildAddUsersRequest(multipleEmails, storyId));
-                var e = document.createElement("label");
-                e.setAttribute("class", "cloud_button");
-                e.style.padding = '25px';
-                e.innerHTML = '<i class="fa fa-cloud"></i>';
-                shareBtn.appendChild(e);
+                if (counting == 0) {
+                    var e = document.createElement("label");
+                    e.setAttribute("class", "cloud_button");
+                    e.style.padding = '25px';
+                    e.innerHTML = '<i class="fa fa-cloud"></i>';
+                    shareBtn.appendChild(e);
+                    counting = 1;
+                }
+               
             }
         });
         document.getElementById("closeButton").addEventListener("click", function() {
