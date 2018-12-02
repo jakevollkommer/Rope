@@ -1,3 +1,4 @@
+var counting = 0;
 ContentScript.prototype.addListeners = function() {
     var $this = this;
 
@@ -73,11 +74,15 @@ ContentScript.prototype.addListeners = function() {
                 var multipleEmails = userEmails.split(",");
                 $this.sendMessage($this.buildUploadStoryRequest(storyId));
                 $this.sendMessage($this.buildAddUsersRequest(multipleEmails, storyId));
-                var e = document.createElement("label");
-                e.setAttribute("class", "cloud_button");
-                e.style.padding = '25px';
-                e.innerHTML = '<i class="fa fa-cloud"></i>';
-                shareBtn.appendChild(e);
+                if (counting == 0) {
+                    var e = document.createElement("label");
+                    e.setAttribute("class", "cloud_button");
+                    e.style.padding = '25px';
+                    e.innerHTML = '<i class="fa fa-cloud"></i>';
+                    shareBtn.appendChild(e);
+                    counting = 1;
+                }
+               
             }
         });
         document.getElementById("closeButton").addEventListener("click", function() {
