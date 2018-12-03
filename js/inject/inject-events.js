@@ -103,29 +103,28 @@ ContentScript.prototype.addListeners = function() {
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
 
-            var table = document.getElementById("userTable");
-            var row = table.insertRow(-1);
-            var userEmail = document.createTextNode("Hello");
-            var rmBtn = document.createElement("input");
-            rmBtn.setAttribute("type", "button");
-            rmBtn.setAttribute("value", "remove");
-            //rmBtn.setAttribute("onclick", "removeUser();");
-            rmBtn.setAttribute("class", "button");
-
-            row.insertCell(0).appendChild(userEmail);
-            row.insertCell(1).appendChild(rmBtn);
-
+            var table = document.getElementById("userTable");        
+            
             // TODO get email from uid
             let users = $this.sendMessage($this.getUsersRequest(storyId));
-
+            var rmBtn = document.createElement("input");
+            rmBtn.setAttribute("type", "button");
+            rmBtn.setAttribute("class", "button");
+            rmBtn.setAttribute("id", "rmBtn");
+            rmBtn.setAttribute("value", "remove");
             for (i = 0; i < users.length; i++) {
-                var row = table.insertRow(1);
+                var row = table.insertRow(-1);
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
-                cell1.innerHTML = users[i];
+                var userEmail = document.createTextNode(users[i]);
+                rmBtn.setAttribute("data-email", users[i]);
+                cell1.innerHTML = userEmail;
+                cell2.innerHTML = rmBtn;
             }
         });
-
+        document.getElementById("rmBtn").addEventListener("click", function() {
+            //remove email from firebase with rmBtn.data-email
+        });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
         });
