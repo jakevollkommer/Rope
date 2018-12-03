@@ -86,6 +86,12 @@ ContentScript.prototype.addListeners = function() {
 
         }
         /*Button listeners*/
+        saveBtn.addEventListener("click", function(){
+            $this.buildUploadStoryRequest(storyId)
+        });
+        document.getElementById('cloudPull').addEventListener("click", function(){
+            $this.buildUploadStoryRequest(storyId)
+        });
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
@@ -117,9 +123,9 @@ ContentScript.prototype.addListeners = function() {
             pop.style.visibility = 'hidden';
             input.value = "";
         });
-
+        var rmBtn = document.createElement("input");
         manageBtn.addEventListener("click", function(){
-            console.log('manage button');
+            
             /*Inject manage users popup on screen */
             document.getElementById("myPopup").style.visibility = 'hidden';
             var pop = document.getElementById("usersPop")
@@ -130,34 +136,36 @@ ContentScript.prototype.addListeners = function() {
 
             // TODO get email from uid
             let users = $this.sendMessage($this.getUsersRequest(storyId));
-            var rmBtn = document.createElement("input");
+            
             rmBtn.setAttribute("type", "button");
             rmBtn.setAttribute("class", "button");
             rmBtn.setAttribute("id", "rmBtn");
             rmBtn.setAttribute("value", "remove");
-            for (i = 0; i < users.length; i++) {
-                var row = table.insertRow(-1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var userEmail = document.createTextNode(users[i]);
-                rmBtn.setAttribute("data_email", users[i]);
-                cell1.innerHTML = userEmail;
-                cell2.innerHTML = rmBtn;
-            }
+            console.log(users)
+            // for (i = 0; i < users.length; i++) {
+            //     var row = table.insertRow(-1);
+            //     var cell1 = row.insertCell(0);
+            //     var cell2 = row.insertCell(1);
+            //     var userEmail = document.createTextNode(users[i]);
+            //     rmBtn.setAttribute("data_email", users[i]);
+            //     cell1.innerHTML = userEmail;
+            //     cell2.innerHTML = rmBtn;
+            // }
         });
         rmBtn.addEventListener("click", function() {
-            $this.removeUser(rmBtn.data_email);
+            let storyId = window.location.hash.split("/").pop()
+            $this.removeUserRequest(rmBtn.data_email,storyId);
+            
             
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
+           
         });
 
     }
 };
-ContentScript.prototype.removeUser = function(user_email) {
 
-}
 ContentScript.prototype.getUsersRequest = function(storyId) {
     let req = {
         story: storyId,
