@@ -21,7 +21,7 @@ Background.prototype.redirectUserAfterLogin = function(user) {
             url: "http://twinery.org/2/#!/stories"
         }, () => {
             // Cache the latest copy of this user's stories
-            $this.getUserStoriesFromFirebase(uid)
+            $this.getUserStoriesFromFirebase(user.uid)
                 .then(data => {
                     $this.userStories = data;
                 })

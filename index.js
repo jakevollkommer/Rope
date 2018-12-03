@@ -35,12 +35,12 @@ app.use(function(req, res, next) {
 
     //intercepts OPTIONS method
     if ('OPTIONS' === req.method) {
-      //respond with 200
-      res.send(200);
+        //respond with 200
+        res.send(200);
     }
     else {
-    //move on
-      next();
+        //move on
+        next();
     }
 });
 
@@ -48,12 +48,34 @@ app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded());
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://rope-b4dbf.firebaseio.com"
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://rope-b4dbf.firebaseio.com"
 });
 var ref = admin.database().ref()
 var userStoriesRef = ref.child('userStories');
 var storiesRef = ref.child('stories');
+
+app.post('/emails', function(req, res, next) {
+    var userIDs = req.body['userIDs'];
+    console.log(req.body);
+    each(userIDs, function(uid, next) {
+        admin.auth().getUser(uid)
+            .then(function(userRecord) {
+                let result = {
+                    id: userRecord.uid,
+                    email: userRecord.email
+                };
+                next(null, result);
+            })
+            .catch(function(error) {
+                console.log("Error fetching user data:", error);
+                next(error);
+            });
+    }, function(error, transformedArray) {
+        console.log(error);
+        return res.json(transformedArray);
+    });
+});
 
 // Add users to a story
 // Story id, the updated list of users that have access to the story

@@ -47,13 +47,6 @@ ContentScript.prototype.addListeners = function() {
         var l = body.lastElementChild.firstElementChild;
         l.appendChild(shareBtn);
 
-
-        var saveBtn = document.createElement("button")
-        saveBtn.setAttribute("id", "save-button");
-        saveBtn.innerText = "Save";
-        l.appendChild(saveBtn);
-
-
         /*Inject share with others popup on screen */
         var xmlHttp = null;
         xmlHttp = new XMLHttpRequest();
@@ -127,27 +120,35 @@ ContentScript.prototype.addListeners = function() {
 
             var table = document.getElementById("userTable");        
             
-
             // TODO get email from uid
             let users = $this.sendMessage($this.getUsersRequest(storyId));
             var rmBtn = document.createElement("input");
             rmBtn.setAttribute("type", "button");
             rmBtn.setAttribute("class", "button");
+<<<<<<< HEAD
+
+            row.insertCell(0).appendChild(userEmail);
+            row.insertCell(1).appendChild(rmBtn);
+
+            let users = $this.sendMessage($this.getUsersRequest(storyId));
+            console.log("users " + users);
+
+=======
             rmBtn.setAttribute("id", "rmBtn");
             rmBtn.setAttribute("value", "remove");
+>>>>>>> b5a33aa9399384876cf90a19359f3765f036c357
             for (i = 0; i < users.length; i++) {
                 var row = table.insertRow(-1);
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var userEmail = document.createTextNode(users[i]);
-                rmBtn.setAttribute("data_email", users[i]);
+                rmBtn.setAttribute("data-email", users[i]);
                 cell1.innerHTML = userEmail;
                 cell2.innerHTML = rmBtn;
             }
         });
-        rmBtn.addEventListener("click", function() {
-            $this.removeUser(rmBtn.data_email);
-            
+        document.getElementById("rmBtn").addEventListener("click", function() {
+            //remove email from firebase with rmBtn.data-email
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
@@ -155,9 +156,7 @@ ContentScript.prototype.addListeners = function() {
 
     }
 };
-ContentScript.prototype.removeUser = function(user_email) {
 
-}
 ContentScript.prototype.getUsersRequest = function(storyId) {
     let req = {
         story: storyId,
@@ -165,16 +164,7 @@ ContentScript.prototype.getUsersRequest = function(storyId) {
     }
 
     return req;
-}
 
-ContentScript.prototype.removeUserRequest = function(userId, storyId) {
-    let req = {
-        userId: userId,
-        storyId: storyId,
-        type: 'removeUser'
-    };
-
-    return req;
 }
 
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
