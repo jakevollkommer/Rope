@@ -12,15 +12,29 @@ ContentScript.prototype.addListeners = function() {
     var child = nav_list[0].childNodes;
     nav_list[0].insertBefore (li, child[7]);
 
-    // Delete story from cloud button
+    let menu_button = document.getElementsByClassName('drop-target');
 
-    var deleteList  = document.createElement("li");
-    deleteList.innerText = "Delete from cloud";
-    var dropdown = document.getElementsByClassName("divider");
-    //dropdown.childNodes.append(deleteList)
-    //console.log(dropdown.childNodes)
-    //[deleteList].concat(Array.from(document.getElementsByClassName('divider')))
-    //dropdown.parentNode.insertBefore(deleteList, dropdown.nextSibling);
+
+    for (i = 0; i < menu_button.length;i++) {
+        // console.log(menu_button[i]);
+        menu_button[i].addEventListener('click', function () {
+            // var menu = document.getElementsByClassName('me')
+            var lis = document.createElement("li");
+            var button = document.createElement("button");
+            button.innerText = "Remove Story from Cloud";
+            button.setAttribute("id", "remove_cloud");
+            lis.append(button);
+            var menus = document.getElementsByClassName("menu");
+            // console.log(menus);
+            for (j =0; j < menus.length; j++) {
+                menus[j].insertBefore(lis, menus[j][6]);
+
+            }
+        });
+    }
+
+
+
 
 
     window.onhashchange = function(e) {
@@ -82,7 +96,7 @@ ContentScript.prototype.addListeners = function() {
                 e.style.padding = '25px';
                 e.innerHTML = '<i class="fa fa-cloud"></i>';
                 console.log("this is hte sharedEmail")
-                console.log(sharedEmail)
+                // console.log(sharedEmail);
                 $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
                 $this.sendMessage($this.buildUploadStoryRequest(storyId));
                 console.log(storyId);
