@@ -103,7 +103,7 @@ app.post('/add', function(req, res, next) {
                         data[uid] = [story];
                         userStoriesRef.update(data);
                     } else if (stories.indexOf(story) == -1) {
-                        stories.push(uid);
+                        stories.push(story);
                         userRef.set(stories);
                     }
                     next();
