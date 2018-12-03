@@ -62,7 +62,7 @@ ContentScript.prototype.addListeners = function() {
             e.style.padding = '25px';
             e.innerHTML = '<i class="fa fa-cloud"></i>';
             shareBtn.appendChild(e);
-            
+
         }
         /*Button listeners*/
         shareBtn.addEventListener("click", function(){
@@ -88,7 +88,7 @@ ContentScript.prototype.addListeners = function() {
                     shareBtn.appendChild(e);
                     counting = 1;
                 }
-               
+
             }
         });
         document.getElementById("closeButton").addEventListener("click", function() {
@@ -115,8 +115,8 @@ ContentScript.prototype.addListeners = function() {
             row.insertCell(0).appendChild(userEmail);
             row.insertCell(1).appendChild(rmBtn);
 
-            // TODO get email from uid
             let users = $this.sendMessage($this.getUsersRequest(storyId));
+            console.log("users " + users);
 
             for (i = 0; i < users.length; i++) {
                 var row = table.insertRow(1);
