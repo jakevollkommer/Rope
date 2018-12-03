@@ -47,6 +47,13 @@ ContentScript.prototype.addListeners = function() {
         var l = body.lastElementChild.firstElementChild;
         l.appendChild(shareBtn);
 
+
+        var saveBtn = document.createElement("button")
+        saveBtn.setAttribute("id", "save-button");
+        saveBtn.innerText = "Save";
+        l.appendChild(saveBtn);
+
+
         /*Inject share with others popup on screen */
         var xmlHttp = null;
         xmlHttp = new XMLHttpRequest();
