@@ -117,13 +117,14 @@ ContentScript.prototype.addListeners = function() {
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
                 var userEmail = document.createTextNode(users[i]);
-                rmBtn.setAttribute("data-email", users[i]);
+                rmBtn.setAttribute("data_email", users[i]);
                 cell1.innerHTML = userEmail;
                 cell2.innerHTML = rmBtn;
             }
         });
-        document.getElementById("rmBtn").addEventListener("click", function() {
-            //remove email from firebase with rmBtn.data-email
+        rmBtn.addEventListener("click", function() {
+            $this.removeUser(rmBtn.data_email);
+            
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
@@ -131,7 +132,9 @@ ContentScript.prototype.addListeners = function() {
 
     }
 };
+ContentScript.prototype.removeUser = function(user_email) {
 
+}
 ContentScript.prototype.getUsersRequest = function(storyId) {
     let req = {
         story: storyId,
