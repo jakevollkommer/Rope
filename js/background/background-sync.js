@@ -48,28 +48,31 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
     });
 }
 
-Background.prototype.getEmailsFromUserIDs = function(userIDs) {
+Background.prototype.removeUserFromStory = function(userId, storyId) {
+    console.log(userId, storyId);
+    // TODO Jake: write the code for removing userId from storyId here
+};
+
+Background.prototype.getEmailsFromUserIDs = function(userIDs, callback) {
     var $this = this;
-    return new Promise(function(resolve, reject) {
 
-        var http = new XMLHttpRequest();
-        var url = 'http://localhost:3000/emails';
-        var params = JSON.stringify({userIDs: userIDs});
-        console.log("params: " + params);
-        http.open('POST', url, true);
+    var http = new XMLHttpRequest();
+    var url = 'http://localhost:3000/emails';
+    var params = JSON.stringify({userIDs: userIDs});
+    console.log("params: " + params);
+    http.open('POST', url, true);
 
-        //Send the proper header information along with the request
-        http.setRequestHeader('Content-Type', 'application/json');
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-Type', 'application/json');
 
-        http.onreadystatechange = function() {//Call a function when the state changes.
-            if (http.readyState == 4 && http.status == 200) {
-                console.log(http.responseText + " are the emails");
-                return resolve(JSON.parse(http.responseText));
-            }
+    http.onreadystatechange = function() {//Call a function when the state changes.
+        if (http.readyState == 4 && http.status == 200) {
+            console.log(http.responseText + " are the emails");
+            return callback(JSON.parse(http.responseText));
         }
-        http.send(params);
+    }
+    http.send(params);
 
-    });
 }
 
 Background.prototype.addUsersToStory = function(userEmails, storyId) {

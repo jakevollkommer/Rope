@@ -16,11 +16,14 @@ ContentScript.prototype.getFirebaseData = function() {
 }
 
 ContentScript.prototype.sendMessage = function(requestBody) {
-    chrome.runtime.sendMessage(requestBody, (response) => {
-        if (!response) {
-            console.log('No response');
-            return;
-        }
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage(requestBody, function(response) {
+            if (!response) {
+                console.log('No response');
+                return;
+            }
+            return resolve(response);
+        });
     });
 }
 

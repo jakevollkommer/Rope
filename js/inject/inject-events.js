@@ -127,26 +127,30 @@ ContentScript.prototype.addListeners = function() {
 
             var table = document.getElementById("userTable");        
             
-            // TODO get email from uid
-            let users = $this.sendMessage($this.getUsersRequest(storyId));
-            var rmBtn = document.createElement("input");
-            rmBtn.setAttribute("type", "button");
-            rmBtn.setAttribute("class", "button");
 
-            rmBtn.setAttribute("id", "rmBtn");
-            rmBtn.setAttribute("value", "remove");
-            for (i = 0; i < users.length; i++) {
-                var row = table.insertRow(-1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var userEmail = document.createTextNode(users[i]);
-                rmBtn.setAttribute("data-email", users[i]);
-                cell1.innerHTML = userEmail;
-                cell2.innerHTML = rmBtn;
-            }
-        });
-        document.getElementById("rmBtn").addEventListener("click", function() {
-            //remove email from firebase with rmBtn.data-email
+            // TODO get email from uid
+            $this.sendMessage($this.getUsersRequest(storyId))
+                .then((userRecords) => {
+                    for (var userRecord of userRecords) {
+                        console.log(userRecord);
+                        var row = table.insertRow(-1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var rmBtn = document.createElement("input");
+                        rmBtn.className = 'button';
+                        rmBtn.setAttribute("type", "button");
+                        rmBtn.setAttribute("value", "remove");
+                        rmBtn.setAttribute("data-uid", userRecord.id);
+                        rmBtn.onclick = function(e) {
+                            let userIdToRemove = e.target.getAttribute('data-uid');
+                            let request = $this.removeUserRequest(userIdToRemove, storyId);
+                            $this.sendMessage(request);
+                        };
+                        cell1.innerHTML = userRecord.email;
+                        cell2.appendChild(rmBtn);
+                    }
+                });
+
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
@@ -162,7 +166,16 @@ ContentScript.prototype.getUsersRequest = function(storyId) {
     }
 
     return req;
+}
 
+ContentScript.prototype.removeUserRequest = function(userId, storyId) {
+    let req = {
+        userId: userId,
+        storyId: storyId,
+        type: 'removeUser'
+    };
+
+    return req;
 }
 
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
