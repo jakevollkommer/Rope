@@ -5,7 +5,7 @@ ContentScript.prototype.addListeners = function() {
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", chrome.extension.getURL ("html/pull.html"), false );
     xmlHttp.send( null );
-
+    
     //Pull from cloud button
     var li  = document.createElement("li");
     li.innerHTML = xmlHttp.responseText;
@@ -34,7 +34,10 @@ ContentScript.prototype.addListeners = function() {
         });
     }
 
-
+    document.getElementById('cloudPull').addEventListener("click", function(){
+        //$this.buildUploadStoryRequest(storyId)
+        console.log('cloud')
+    });
 
 
     var counting = 0;
@@ -89,9 +92,7 @@ ContentScript.prototype.addListeners = function() {
         saveBtn.addEventListener("click", function(){
             $this.buildUploadStoryRequest(storyId)
         });
-        document.getElementById('cloudPull').addEventListener("click", function(){
-            $this.buildUploadStoryRequest(storyId)
-        });
+        
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
