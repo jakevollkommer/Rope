@@ -16,7 +16,11 @@ ContentScript.prototype.addListeners = function() {
 
     document.getElementById("pull-cloud").addEventListener("click", function () {
         console.log("cloud");
-
+        $this.sendMessage({type: 'syncStories'})
+            .then((data) => {
+                console.log(data);
+                $this.saveFirebaseDataLocally(data);
+            })
     });
 
 
@@ -106,7 +110,10 @@ ContentScript.prototype.addListeners = function() {
         /*Button listeners*/
         saveBtn.addEventListener("click", function(){
             console.log('save');
-            $this.buildUploadStoryRequest(storyId);
+            $this.sendMessage($this.buildUploadStoryRequest(storyId))
+                .then((response) => {
+                    console.log(response);
+                });
         });
 
         shareBtn.addEventListener("click", function(){

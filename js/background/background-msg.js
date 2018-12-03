@@ -7,7 +7,7 @@
  */
 Background.prototype.initMessageListener = function() {
     var $this = this;
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { 
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (!firebase.auth().currentUser) {
             console.log('No one is currently logged in');
             sendResponse(null);
@@ -18,8 +18,13 @@ Background.prototype.initMessageListener = function() {
          */
         if (request.type == 'syncStories') {
             console.log('Sync stories request');
-            sendResponse($this.userStories);
-            return;
+            $this.getUserStoriesFromFirebase($this.userId)
+                .then(data => {
+                    $this.userStories = data;
+                    sendResponse($this.userStories);
+                })
+                .catch(err => { console.log(err); });
+            return true;
         }
 
         if (request.type == 'retrieveStories') {
@@ -64,6 +69,7 @@ Background.prototype.initMessageListener = function() {
 
         if (request.type == 'uploadStory') {
             console.log("uploading story")
+            console.log(request);
             let story = request.story;
             let passages = request.passages;
             $this.uploadStory(story, passages, $this.userId);
