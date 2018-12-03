@@ -132,18 +132,9 @@ ContentScript.prototype.addListeners = function() {
             var rmBtn = document.createElement("input");
             rmBtn.setAttribute("type", "button");
             rmBtn.setAttribute("class", "button");
-<<<<<<< HEAD
 
-            row.insertCell(0).appendChild(userEmail);
-            row.insertCell(1).appendChild(rmBtn);
-
-            let users = $this.sendMessage($this.getUsersRequest(storyId));
-            console.log("users " + users);
-
-=======
             rmBtn.setAttribute("id", "rmBtn");
             rmBtn.setAttribute("value", "remove");
->>>>>>> b5a33aa9399384876cf90a19359f3765f036c357
             for (i = 0; i < users.length; i++) {
                 var row = table.insertRow(-1);
                 var cell1 = row.insertCell(0);
