@@ -61,7 +61,11 @@ app.post('/emails', function(req, res, next) {
     each(userIDs, function(uid, next) {
         admin.auth().getUser(uid)
             .then(function(userRecord) {
-                next(null, userRecord.email)
+                let result = {
+                    id: userRecord.uid,
+                    email: userRecord.email
+                };
+                next(null, result);
             })
             .catch(function(error) {
                 console.log("Error fetching user data:", error);
