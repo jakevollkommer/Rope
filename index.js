@@ -61,7 +61,7 @@ app.post('/emails', function(req, res, next) {
     each(userIDs, function(uid, next) {
         admin.auth().getUser(uid)
             .then(function(userRecord) {
-                let result = {
+                var result = {
                     id: userRecord.uid,
                     email: userRecord.email
                 };

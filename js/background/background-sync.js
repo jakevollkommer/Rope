@@ -49,8 +49,33 @@ Background.prototype.getUserStoriesFromFirebase = function(userId) {
 }
 
 Background.prototype.removeUserFromStory = function(userId, storyId) {
+    var $this = this;
     console.log(userId, storyId);
     // TODO Jake: write the code for removing userId from storyId here
+    let userRef = $this.database.ref('stories').child(storyId).child('users');
+    let userStoriesRef = $this.database.ref('userStories').child(userId);
+    userRef.once("value", function(snapshot) {
+        let users = snapshot.val();
+        let newUsers = [];
+        for (var user of users) {
+            if (user !== userId) {
+                newUsers.push(user);
+            }
+        }
+        console.log(newUsers);
+        userRef.set(newUsers);
+    });
+    userStoriesRef.once("value", function(snapshot) {
+        let stories = snapshot.val();
+        let newStories = [];
+        for (var story of stories) {
+            if (story !== storyId) {
+                newStories.push(story);
+            }
+        }
+        console.log(newStories);
+        userStoriesRef.set(newStories);
+    })
 };
 
 Background.prototype.getEmailsFromUserIDs = function(userIDs, callback) {

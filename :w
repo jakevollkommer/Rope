@@ -135,28 +135,26 @@ ContentScript.prototype.addListeners = function() {
             var table = document.getElementById("userTable");
 
 
-            $this.sendMessage($this.getUsersRequest(storyId))
-                .then((userRecords) => {
-                    for (var userRecord of userRecords) {
-                        console.log(userRecord);
-                        var row = table.insertRow(-1);
-                        var cell1 = row.insertCell(0);
-                        var cell2 = row.insertCell(1);
-                        var rmBtn = document.createElement("input");
-                        rmBtn.className = 'button';
-                        rmBtn.setAttribute("type", "button");
-                        rmBtn.setAttribute("value", "remove");
-                        rmBtn.setAttribute("data-uid", userRecord.id);
-                        rmBtn.onclick = function(e) {
-                            let userIdToRemove = e.target.getAttribute('data-uid');
-                            let request = $this.removeUserRequest(userIdToRemove, storyId);
-                            $this.sendMessage(request);
-                        };
-                        cell1.innerHTML = userRecord.email;
-                        cell2.appendChild(rmBtn);
-                    }
-                });
+            let users = $this.sendMessage($this.getUsersRequest(storyId));
 
+            rmBtn.setAttribute("type", "button");
+            rmBtn.setAttribute("class", "button");
+            rmBtn.setAttribute("id", "rmBtn");
+            rmBtn.setAttribute("value", "remove");
+            rmBtn.addEventListener("click", function() {
+                let storyId = window.location.hash.split("/").pop()
+                $this.removeUserRequest(rmBtn.data_email,storyId);
+            });
+            for (var user of users) {
+                console.log(user);
+                var row = table.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var userEmail = document.createTextNode(user[email]);
+                rmBtn.setAttribute("data_email", user[id]);
+                cell1.innerHTML = user[email];
+                cell2.innerHTML = rmBtn;
+            }
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
             document.getElementById("usersPop").style.visibility = 'hidden';
