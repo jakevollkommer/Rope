@@ -9,15 +9,23 @@ ContentScript.prototype.addListeners = function() {
     //Pull from cloud button
     var li  = document.createElement("li");
     li.innerHTML = xmlHttp.responseText;
+    li.setAttribute("id", "pull-cloud");
     var nav_list = document.getElementsByClassName("plain");
     var child = nav_list[0].childNodes;
     nav_list[0].insertBefore (li, child[7]);
 
-    let menu_button = document.getElementsByClassName('drop-target');
+    document.getElementById("pull-cloud").addEventListener("click", function () {
+        console.log("cloud");
 
+    });
+
+
+    let menu_button = document.getElementsByClassName('drop-target');
 
     for (i = 0; i < menu_button.length;i++) {
         // console.log(menu_button[i]);
+        let max = menu_button.length;
+        var count = 0;
         menu_button[i].addEventListener('click', function () {
             // var menu = document.getElementsByClassName('me')
             var lis = document.createElement("li");
@@ -26,9 +34,16 @@ ContentScript.prototype.addListeners = function() {
             button.setAttribute("id", "remove_cloud");
             lis.append(button);
             var menus = document.getElementsByClassName("menu");
+            let max = menus.length;
+
             // console.log(menus);
             for (j =0; j < menus.length; j++) {
-                menus[j].insertBefore(lis, menus[j][6]);
+                if (count < max) {
+                    menus[j].insertBefore(lis, menus[j][6]);
+                    console.log(count);
+                    count = count + 1;
+                }
+
 
             }
         });
@@ -90,13 +105,16 @@ ContentScript.prototype.addListeners = function() {
         }
         /*Button listeners*/
         saveBtn.addEventListener("click", function(){
-            $this.buildUploadStoryRequest(storyId)
+            console.log('save');
+            $this.buildUploadStoryRequest(storyId);
         });
 
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
         });
+
+
 
         submitBtn.addEventListener("click", function() {
             var userEmails = input.value;
