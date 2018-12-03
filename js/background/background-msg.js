@@ -29,18 +29,28 @@ Background.prototype.initMessageListener = function() {
 
         if (request.type == 'addUsers') {
             console.log("adding user to story");
-            var userIds = request.userIds;
+            var userEmails = request.userEmails;
+            userEmails.push($this.userEmail);
             let storyId = request.storyId;
-            $this.addUsersToStory(userIds, storyId);
+            $this.addUsersToStory(userEmails, storyId);
             console.log('added user to story');
             sendResponse();
+        }
+
+        if (request.type == 'getUsers') {
+            let story = request.story;
+            let usersRef = $this.database.ref('stories/' + story).child('users')
+            usersRef.once('value', function(snapshot) {
+                let users = snapshot.val();
+                sendResponse(users);
+            });
         }
 
         if (request.type == 'uploadStory') {
             console.log("uploading story")
             let story = request.story;
             let passages = request.passages;
-            $this.uploadStory(story, passages);
+            $this.uploadStory(story, passages, $this.userId);
             console.log('uploaded story to firebase');
             sendResponse();
         }

@@ -1,3 +1,4 @@
+
 ContentScript.prototype.addListeners = function() {
     var $this = this;
 
@@ -36,9 +37,8 @@ ContentScript.prototype.addListeners = function() {
 
 
 
-
+    var counting = 0;
     window.onhashchange = function(e) {
-
         /*Inject share button on toolbar */
         var shareBtn = document.createElement("button")
         shareBtn.setAttribute("class", "share-button");
@@ -53,57 +53,60 @@ ContentScript.prototype.addListeners = function() {
         xmlHttp.open( "GET", chrome.extension.getURL ("html/sharePopup.html"), false );
         xmlHttp.send( null );
         var inject = document.createElement("div");
-
-        // /*Inject manage users popup on screen */
-        // var xmlHttp = null;
-        // xmlHttp = new XMLHttpRequest();
-        // xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
-        // xmlHttp.send( null );
-        // var inject = document.createElement("div");
-
         inject.innerHTML = xmlHttp.responseText
         document.body.insertBefore(inject, document.body.firstChild);
+
+        var xmlHttp2 = null;
+        xmlHttp2 = new XMLHttpRequest();
+        xmlHttp2.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
+        xmlHttp2.send( null );
+        var inject2 = document.createElement("div");
+        inject2.innerHTML = xmlHttp2.responseText
+        document.body.insertBefore(inject2, document.body.firstChild);
         /* Go ahead and define all the buttons*/
         var input = document.getElementById("inputSubmit");
         var submitBtn = document.getElementById("btnSubmit");
-        var closeBtn = document.getElementById("closeButton");
         var pop = document.getElementById("myPopup");
         var manageBtn = document.getElementById("btnManage");
         var manage = document.getElementById
         let storyId = window.location.hash.split("/").pop()
-
+        if (counting == 1) {
+            var e = document.createElement("label");
+            e.setAttribute("class", "cloud_button");
+            e.style.padding = '25px';
+            e.innerHTML = '<i class="fa fa-cloud"></i>';
+            shareBtn.appendChild(e);
+            
+        }
         /*Button listeners*/
         shareBtn.addEventListener("click", function(){
             var pop = document.getElementById("myPopup")
             pop.style.visibility = 'visible';
         });
 
-
         submitBtn.addEventListener("click", function() {
-            var sharedEmail = input.value;
+            var userEmails = input.value;
             input.value = "";
-            if (sharedEmail) {
+            if (userEmails) {
 
                 pop.style.visibility = 'hidden';
 
-                var multipleEmails = sharedEmail.split(",");
-                for (i = 0; i < multipleEmails.length; i++) {
-                    $this.sendMessage($this.buildAddUsersRequest(multipleEmails[i].replace(/\s+/g, ''), storyId));
+
+                var multipleEmails = userEmails.split(",");
+                $this.sendMessage($this.buildUploadStoryRequest(storyId));
+                $this.sendMessage($this.buildAddUsersRequest(multipleEmails, storyId));
+                if (counting == 0) {
+                    var e = document.createElement("label");
+                    e.setAttribute("class", "cloud_button");
+                    e.style.padding = '25px';
+                    e.innerHTML = '<i class="fa fa-cloud"></i>';
+                    shareBtn.appendChild(e);
+                    counting = 1;
                 }
-                $this.sendMessage($this.buildUploadStoryRequest(storyId));
-                var e = document.createElement("label");
-                e.setAttribute("class", "cloud_button");
-                e.style.padding = '25px';
-                e.innerHTML = '<i class="fa fa-cloud"></i>';
-                console.log("this is hte sharedEmail")
-                // console.log(sharedEmail);
-                $this.sendMessage($this.buildAddUsersRequest(sharedEmail, storyId));
-                $this.sendMessage($this.buildUploadStoryRequest(storyId));
-                console.log(storyId);
-                shareBtn.appendChild(e);
+               
             }
         });
-        closeBtn.addEventListener("click", function() {
+        document.getElementById("closeButton").addEventListener("click", function() {
             pop.style.visibility = 'hidden';
             input.value = "";
         });
@@ -112,36 +115,50 @@ ContentScript.prototype.addListeners = function() {
             console.log('manage button');
             /*Inject manage users popup on screen */
             document.getElementById("myPopup").style.visibility = 'hidden';
-            var xmlHttp = null;
-            xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", chrome.extension.getURL ("html/manageUsers.html"), false );
-            xmlHttp.send( null );
-            var inject = document.createElement("div");
-            inject.innerHTML = xmlHttp.responseText
-            document.body.insertBefore(inject, document.body.firstChild);
-
             var pop = document.getElementById("usersPop")
             pop.style.visibility = 'visible';
 
-            var table = document.getElementById("userTable");
-            // for (i = 0; i < users.length; i++) {
-            //     var row = table.insertRow(1);
-            //     var cell1 = row.insertCell(0);
-                // var cell2 = row.insertCell(1);
-            //     cell1.innerHTML = user.email;
-            // }
+            var table = document.getElementById("userTable");        
             
-
+            // TODO get email from uid
+            let users = $this.sendMessage($this.getUsersRequest(storyId));
+            var rmBtn = document.createElement("input");
+            rmBtn.setAttribute("type", "button");
+            rmBtn.setAttribute("class", "button");
+            rmBtn.setAttribute("id", "rmBtn");
+            rmBtn.setAttribute("value", "remove");
+            for (i = 0; i < users.length; i++) {
+                var row = table.insertRow(-1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var userEmail = document.createTextNode(users[i]);
+                rmBtn.setAttribute("data-email", users[i]);
+                cell1.innerHTML = userEmail;
+                cell2.innerHTML = rmBtn;
+            }
+        });
+        document.getElementById("rmBtn").addEventListener("click", function() {
+            //remove email from firebase with rmBtn.data-email
         });
         document.getElementById("managecloseButton").addEventListener("click", function() {
-            pop.style.visibility = 'hidden';
-            input.value = "";
+            document.getElementById("usersPop").style.visibility = 'hidden';
         });
 
     }
 };
 
+ContentScript.prototype.getUsersRequest = function(storyId) {
+    let req = {
+        story: storyId,
+        type: 'getUsers'
+    }
+
+    return req;
+
+}
+
 ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
+    var $this = this;
     if (!storyId) {
         return null;
     }
@@ -163,12 +180,12 @@ ContentScript.prototype.buildUploadStoryRequest = function(storyId) {
     return uploadStoryRequest;
 }
 
-ContentScript.prototype.buildAddUsersRequest = function(sharedEmail, storyId) {
-    if (!sharedEmail || !storyId) {
+ContentScript.prototype.buildAddUsersRequest = function(userEmails, storyId) {
+    if (!userEmails || !storyId) {
         return null;
     }
     let addUsersRequest = {
-        userIds: [sharedEmail],
+        userEmails: userEmails,
         type: 'addUsers',
         storyId: storyId
     };

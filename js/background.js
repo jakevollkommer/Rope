@@ -13,6 +13,8 @@ var Background = function() {
         messagingSenderId: "794052295835"
     };
     this.database;
+    this.userEmail;
+    this.userId;
 }
 
 window.onload = function() {

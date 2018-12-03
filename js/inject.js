@@ -8,8 +8,6 @@ if (window) {
         var contentScript = new ContentScript();
         contentScript.getFirebaseData();
         contentScript.addListeners();
-
-
     }
 }
 
